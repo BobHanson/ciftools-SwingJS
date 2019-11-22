@@ -1,0 +1,14 @@
+<project name="zip" default="toJs" basedir=".">
+ 
+   <target name="toJs" id="toJs">
+  			
+   	
+   	<echo>creating ciftools_site.zip </echo>
+   	<zip destfile="dist/ciftools_site.zip" basedir="." includes="site/**" />
+   	
+  </target>
+
+
+		
+	
+</project>

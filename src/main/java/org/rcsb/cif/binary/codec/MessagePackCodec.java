@@ -324,7 +324,17 @@ public class MessagePackCodec {
 
     private Map<String, Object> map(DataInputStream inputStream, int length) throws IOException {
     	// BH SwingJS 10% improvement in decoding speed for 3j9m
-        Map<String, Object> value = (/**@j2sNative true || */false ? new HashMap<>() : new LinkedHashMap<>());
+    	Map<String, Object> value = null;
+    	/**
+    	 * @j2sNative
+    	 * 
+    	 * Clazz.load("java.util.JSHashMap");
+    	 *   value = new java.util.JSHashMap();
+    	 * 
+    	 */
+    	{
+    		 value= new LinkedHashMap<>();
+    	}
         for (int i = 0; i < length; i++) {
             value.put((String) decodeInternal(inputStream), decodeInternal(inputStream));
         }

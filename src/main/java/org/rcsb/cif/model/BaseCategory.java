@@ -131,4 +131,32 @@ public class BaseCategory implements Category {
         return defined;
     }
 
+	@Override
+	public double[][] fillFloat(String... colNames) {
+		if (colNames.length == 0)
+			return new double[0][];
+		try {
+			double[][] a = new double[colNames.length][rowCount];
+			for (int i = colNames.length; --i >= 0;) {
+				BaseColumn col = (BaseColumn) getColumn(colNames[i]);
+				Object data = col.getUnmaskedData();
+				switch (col.type) {
+				case BaseColumn.COLUMN_TYPE_STRING:
+					continue;
+				case BaseColumn.COLUMN_TYPE_FLOAT:
+					a[i] = (double[]) data;
+					break;
+				case BaseColumn.COLUMN_TYPE_INT:
+					for (int j = rowCount; --j >= 0;) {
+						a[i][j] = ((int[]) data)[j];
+					}
+					break;
+				}
+			}
+			return a;
+		} catch(Exception e) {
+			return null;
+		}
+	}
+
 }

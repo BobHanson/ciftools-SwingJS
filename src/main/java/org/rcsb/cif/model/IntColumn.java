@@ -72,45 +72,49 @@ public class IntColumn extends BaseColumn {
         return binaryData;
     }
     
+    private int[] unmasked;
+    
     /**
      * Uses Integer.MIN_VALUE for not present and Integer.MAX_VALUE for unknown
      */
 	@Override
 	public Object getUnmaskedData() {
-		int[] unmasked = new int[rowCount];
+		if (!isText && !hasMask)
+			return binaryData;
+		if (unmasked != null)
+			return unmasked;
+		int[] a = new int[rowCount];
 		if (isText) {
 			for (int i = rowCount; --i >= 0;) {
 				String val = getRawTextData(i);
 				switch (val) {
 				case ".":
 				case "":
-					unmasked[i] = Integer.MIN_VALUE;
+					a[i] = Integer.MIN_VALUE;
 					break;
 				case "?":
-					unmasked[i] = Integer.MAX_VALUE;
+					a[i] = Integer.MAX_VALUE;
 					break;
 				default:
-					unmasked[i] = Integer.parseInt(val);
+					a[i] = Integer.parseInt(val);
 				}
 			}
 		} else {
-			if (!hasMask)
-				return binaryData;
 			for (int i = rowCount; --i >= 0;) {
 				switch (mask[i]) {
 				case 0: // present
-					unmasked[i] = binaryData[i];
+					a[i] = binaryData[i];
 					break;
 				case 1: // not present, .
-					unmasked[i] = Integer.MIN_VALUE;
+					a[i] = Integer.MIN_VALUE;
 					break;
 				case 2: // unknown ?
-					unmasked[i] = Integer.MAX_VALUE;
+					a[i] = Integer.MAX_VALUE;
 					break;
 				}
 			}
 		}
-		return unmasked;
+		return unmasked = a;
 	}
 
 

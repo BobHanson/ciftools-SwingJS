@@ -68,47 +68,52 @@ public class FloatColumn extends BaseColumn {
     public double[] getBinaryData() {
         return binaryData;
     }
+    
+    
+    private double[] unmasked;
 
     /**
      * Uses Double.MIN_VALUE for not present and Double.MAX_VALUE for unknown
      */
 	@Override
 	public Object getUnmaskedData() {
+		if (!isText && !hasMask)
+			return binaryData;
+		if (unmasked != null)
+			return unmasked;
 		int n = rowCount;
-		double[] unmasked = new double[n];
+		double[] a = new double[n];
 		if (isText) {
 			for (int i = rowCount; --i >= 0;) {
 				String val = getRawTextData(i);
 				switch (val) {
 				case ".":
 				case "":
-					unmasked[i] = Double.MIN_VALUE;
+					a[i] = Double.MIN_VALUE;
 					break;
 				case "?":
-					unmasked[i] = Double.MAX_VALUE;
+					a[i] = Double.MAX_VALUE;
 					break;
 				default:
-					unmasked[i] = Double.parseDouble(val);
+					a[i] = Double.parseDouble(val);
 				}
 			}
 		} else {
-			if (!hasMask)
-				return binaryData;
 			for (int i = n; --i >= 0;) {
 				switch (mask[i]) {
 				case 0: // present
-					unmasked[i] = binaryData[i];
+					a[i] = binaryData[i];
 					break;
 				case 1: // not present
-					unmasked[i] = Double.MIN_VALUE;
+					a[i] = Double.MIN_VALUE;
 					break;
 				case 2: // unknown
-					unmasked[i] = Double.MAX_VALUE;
+					a[i] = Double.MAX_VALUE;
 					break;
 				}
 			}
 		}
-		return unmasked;
+		return unmasked = a;
 	}
 
 	public String toString() {

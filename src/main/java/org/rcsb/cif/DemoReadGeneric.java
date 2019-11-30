@@ -9,22 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
-import org.rcsb.cif.DemoReadGeneric.Atom;
-import org.rcsb.cif.model.BaseColumn;
 import org.rcsb.cif.model.BlockGeneric;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFileGeneric;
-import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.FloatColumn;
-import org.rcsb.cif.model.IntColumn;
-import org.rcsb.cif.model.StrColumn;
 
 /**
  * A class that demonstrates "generic" cif reading -- where
@@ -49,6 +40,23 @@ import org.rcsb.cif.model.StrColumn;
  */
 public class DemoReadGeneric {
 
+	// baseline data for 3j9m (ms)
+
+// JavaScript
+//
+//	          5    niter=11    processStream BINARY StreamParser
+//			  4    niter=11    processStream BINARY StreamParser
+//			146    niter=10    ------PARSE binary (-GC)
+//			146    niter=10    ------PARSE binary
+//	
+// Java (ms)
+//
+//	         4	niter=11	processStream BINARY StreamParser
+//		  	 3	niter=11	processStream BINARY StreamParser
+//			 4	niter=11	processStream BINARY StreamParser
+//			52	niter=10	------PARSE binary (-GC)
+//			78	niter=10	------PARSE binary
+	
 	public static class Atom extends Point.Double {
 		double x,y,z;
 		public Atom(double x, double y, double z) {

@@ -22,6 +22,27 @@ import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.StrColumn;
 
+/**
+ * A class that demonstrates "generic" cif reading -- where
+ * the categories and column types can be retrieved from 
+ * property files for soft-coded extensions without using
+ * any of the specialized model/generated classes.
+ * 
+ * Utilizes org.rcsb.cif.*.*Generic.java
+ * 
+ * Note that reading generically requires only a few general 
+ * category methods:
+ * 
+ * BlockGeneric CifFileGeneric.getFirstBlock()
+ * Category BlockGeneric.getCategory(String name)
+ * List Category.getColumnNames()
+ * Column BlockCategory.getColumn(String name)
+ * 
+ * Read-only; does not support cifFile.write()
+ * 
+ * @author hansonr
+ *
+ */
 public class DemoReadGeneric {
 
 	/**

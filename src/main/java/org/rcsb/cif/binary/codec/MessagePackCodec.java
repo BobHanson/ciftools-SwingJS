@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -321,7 +323,8 @@ public class MessagePackCodec {
     }
 
     private Map<String, Object> map(DataInputStream inputStream, int length) throws IOException {
-        Map<String, Object> value = new LinkedHashMap<>();
+    	// BH SwingJS 10% improvement in decoding speed for 3j9m
+        Map<String, Object> value = (/**@j2sNative true || */false ? new HashMap<>() : new LinkedHashMap<>());
         for (int i = 0; i < length; i++) {
             value.put((String) decodeInternal(inputStream), decodeInternal(inputStream));
         }

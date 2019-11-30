@@ -1,5 +1,6 @@
 package org.rcsb.cif;
 
+import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -8,16 +9,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
+import org.rcsb.cif.DemoReadGeneric.Atom;
 import org.rcsb.cif.model.BaseColumn;
 import org.rcsb.cif.model.BlockGeneric;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFileGeneric;
+import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.StrColumn;
@@ -44,6 +48,19 @@ import org.rcsb.cif.model.StrColumn;
  *
  */
 public class DemoReadGeneric {
+
+	public static class Atom extends Point.Double {
+		double x,y,z;
+		public Atom(double x, double y, double z) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+		
+		public String toString() {
+			return "[" + x + "," + y + "," + z + "]";
+		}
+	}
 
 	/**
 	 * environment flag to prevent unnecessary Swing classes from loading
@@ -80,7 +97,8 @@ public class DemoReadGeneric {
 	// parsing of 1acj text: 2.7 sec
 
 	public static void main(String[] args) {
-		String pdbId = "1acj";
+		//String pdbId = "1acj";
+		String pdbId = "3j9m";
 		try {
 			
 			long t0 = System.nanoTime();
@@ -94,7 +112,7 @@ public class DemoReadGeneric {
 //			parse(pdbId, MODE_READ_BYTE_STREAM | MODE_OPTION_GET_ALL_DATA);
 //			parse(pdbId, MODE_READ_FILE | MODE_OPTION_GET_ALL_DATA);
 			
-			parse(pdbId, MODE_READ_BYTE_STREAM | MODE_OPTION_PROCESS | MODE_LOCAL);
+			parse(pdbId, MODE_READ_BYTE_STREAM | MODE_OPTION_PROCESS);// | MODE_LOCAL);
 //			parse(pdbId, MODE_READ_FILE | MODE_OPTION_PROCESS);
 
 			
@@ -102,6 +120,8 @@ public class DemoReadGeneric {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.out.println("Demo complete");
 	}
 	
 	protected static void parse(String pdbId, int mode) throws IOException {
@@ -130,7 +150,7 @@ public class DemoReadGeneric {
 			int binaryOptions = MODE_READ_PARSE_BINARY | mode;
 			int textOptions = MODE_READ_PARSE_TEXT | mode;
 			test(binaryOptions);
-			test(textOptions);
+			//test(textOptions);
 		}
 
 		private void test(int mode) throws IOException {
@@ -162,17 +182,13 @@ public class DemoReadGeneric {
 	 */
 	protected static class StreamParser extends Parser {
 
-		protected InputStream inputStream, binaryStream, textStream;
-
+		protected InputStream inputStream;//, binaryStream, textStream;
+		String pdbId;
+		
 		protected StreamParser(String pdbId, int mode) throws MalformedURLException, IOException {
-//			binaryStream = loadStream("1crn", MODE_READ_PARSE_BINARY);
-//			textStream = loadStream("1crn", MODE_READ_PARSE_TEXT);
-//			binaryStream = loadStream("1crn", MODE_READ_PARSE_BINARY);
-//			textStream = loadStream("1crn", MODE_READ_PARSE_TEXT);
-//			binaryStream = loadStream("1crn", MODE_READ_PARSE_BINARY);
-//			textStream = loadStream("1crn", MODE_READ_PARSE_TEXT);
-			binaryStream = loadStream(pdbId, MODE_READ_PARSE_BINARY | (mode & MODE_LOCAL));
-			textStream = loadStream(pdbId, MODE_READ_PARSE_TEXT | (mode & MODE_LOCAL));
+			this.pdbId = pdbId;
+//			binaryStream = loadStream(pdbId, MODE_READ_PARSE_BINARY | (mode & MODE_LOCAL));
+//			textStream = loadStream(pdbId, MODE_READ_PARSE_TEXT | (mode & MODE_LOCAL));
 		}
 
 		private InputStream loadStream(String pdbId, int mode) throws MalformedURLException, IOException {
@@ -189,14 +205,19 @@ public class DemoReadGeneric {
 				t1 = reportTime(t1, type + " transfer from " + getURL(pdbId, isBinary));
 				t0 = reportTime(t0, 3, type + " transfer from " + getURL(pdbId, isBinary));
 			} else {
-				t0 = reportTime(t0, type + " transfer from " + getURL(pdbId, isBinary) + " len=" + is.available());
+				t0 = reportTime(t0, type  + " len=" + is.available() + " transfer from " + getURL(pdbId, isBinary));
 			}
 			return is;
 		}
 
 		@Override
 		void setMode(int mode) {
-			inputStream = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY ? binaryStream : textStream);
+			try {
+				inputStream = loadStream(pdbId, MODE_READ_PARSE_BINARY | (mode & MODE_LOCAL));
+			} catch (IOException e) {
+			}
+//			
+//			inputStream = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY ? binaryStream : textStream);
 		}
 
 		protected void parse(int mode) throws IOException {
@@ -204,7 +225,7 @@ public class DemoReadGeneric {
 			boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 			boolean getAllData = ((mode & MODE_OPTION_GET_ALL_DATA) == MODE_OPTION_GET_ALL_DATA);
 			boolean process = ((mode & MODE_OPTION_PROCESS) == MODE_OPTION_PROCESS);
-			long t0 = System.nanoTime();
+			long t0 = System.nanoTime(), t1;
 
 			inputStream.reset();
 			CifFileGeneric cifFile = CifIOGeneric.readFromInputStream(inputStream);
@@ -214,8 +235,13 @@ public class DemoReadGeneric {
 				System.out.println("getting data");
 			}
 			if (process) {
-				process(cifFile, mode);
+				silent = false;
+				t1 = (silent ? 0 : System.nanoTime());
+				for (int i = 0; i < 11; i++)
+					process(cifFile, mode | MODE_SILENT);
+				t1 = (silent ? 0 : reportTime(t1, 11, "processStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName()));
 			}
+
 		}
 
 	}
@@ -263,45 +289,59 @@ public class DemoReadGeneric {
 		boolean silent = ((mode & MODE_SILENT) == MODE_SILENT);
 		boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 		String type = (parseBinary ? "binary " : "text ");
-		long t0 = System.nanoTime();
+		long t0 = System.nanoTime(), t1 = 0;
 		BlockGeneric data = cifFile.getFirstBlock();
 
 		// get category with name '_atom_site' from first block - access is type-safe,
 		// all categories
 		// are inferred from the CIF schema
 		Category atomSite = data.getCategory("atom_site");
-		List<String> cols = atomSite.getColumnNames();
-		for(int i = 0, n = cols.size(); i < n; i++) {
-			String name = cols.get(i);
-			BaseColumn x = (BaseColumn) atomSite.getColumn(name);
-			x.getUnmaskedData();
-			System.out.print(type);
-			System.out.println(name + " " + x.getRowCount());
+		int nAtoms = atomSite.getRowCount();
+		if (!silent)
+			System.out.println("nAtoms=" + nAtoms);
+		boolean useFunctional = false;
+		if (useFunctional) {
+			// obtain entry id
+//			String entryId = ((StrColumn) data.getCategory("entry").getColumn("id")).get(0);
+//			System.out.println(entryId);
+
+//		List<Atom> atoms = new ArrayList<Atom>(aatoms.length);
+
+			// calculate the average x-coordinate - #values() returns as DoubleStream as
+			// defined in the
+			// schema for column 'Cartn_x'
+			t1 = System.nanoTime();
+			FloatColumn cx = ((FloatColumn) atomSite.getColumn("cartn_x"));
+			FloatColumn cy = ((FloatColumn) atomSite.getColumn("cartn_y"));
+			FloatColumn cz = ((FloatColumn) atomSite.getColumn("cartn_z"));
+			OptionalDouble averageCartnX = cx.values().average();
+			if (true || !silent) {
+				t1 = reportTime(t1, "functional average nAtoms=" + nAtoms);
+				System.out.print(type);
+				averageCartnX.ifPresent(System.out::println);
+			}
+		} else {
+			double[][] aatoms = atomSite.fillFloat(new String[] { "cartn_x", "cartn_y", "cartn_z" });
+			double sum = 0;
+			for (int i = nAtoms; --i >= 0;)
+				sum += aatoms[0][i];
+			double ave = (nAtoms == 0 ? 0 : sum / nAtoms);
+			if (!silent) {
+				t1 = reportTime(t1, "for-loop average nAtoms=" + nAtoms);
+				System.out.print(type);
+				System.out.println(ave);
+			}
 		}
-		
-		FloatColumn cartnX = (FloatColumn) atomSite.getColumn("cartn_x");
+//		// print the last residue sequence id - this time #values() returns an IntStream
+//		OptionalInt lastLabelSeqId = ((IntColumn) atomSite.getColumn("label_seq_id")).values().max();
+//		System.out.print(type);
+//		lastLabelSeqId.ifPresent(System.out::println);
 
-		// obtain entry id
-		String entryId = ((StrColumn)data.getCategory("entry").getColumn("id")).get(0);
-		System.out.println(entryId);
-
-		// calculate the average x-coordinate - #values() returns as DoubleStream as
-		// defined in the
-		// schema for column 'Cartn_x'
-		OptionalDouble averageCartnX = cartnX.values().average();
-		System.out.print(type);
-		averageCartnX.ifPresent(System.out::println);
-
-		// print the last residue sequence id - this time #values() returns an IntStream
-		OptionalInt lastLabelSeqId = ((IntColumn)atomSite.getColumn("label_seq_id")).values().max();
-		System.out.print(type);
-		lastLabelSeqId.ifPresent(System.out::println);
-
-		// print record type - or #values() may be text
-		Optional<String> groupPdb = ((StrColumn)data.getCategory("atom_site")
-				.getColumn("group_pdb")).values().findFirst();
-		System.out.print(type);
-		groupPdb.ifPresent(System.out::println);
+//		// print record type - or #values() may be text
+//		Optional<String> groupPdb = ((StrColumn) data.getCategory("atom_site").getColumn("group_pdb")).values()
+//				.findFirst();
+//		System.out.print(type);
+//		groupPdb.ifPresent(System.out::println);
 		if (!silent)
 			t0 = reportTime(t0, "parse " + (parseBinary ? "BINARY" : "TEXT"));
 	}

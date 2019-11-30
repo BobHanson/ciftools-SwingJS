@@ -62,4 +62,6 @@ public interface Category {
     boolean isDefined();
 
 	List<String> getColumnNamesEncoded();
+
+	double[][] fillFloat(String... colNames);
 }

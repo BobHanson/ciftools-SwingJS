@@ -69,16 +69,20 @@ public class StrColumn extends BaseColumn {
         return binaryData;
     }
     
+    private String[] unmasked;
+    
 	/**
 	 * Uses "." for not present and "?" for unknown
 	 */
 	public Object getUnmaskedData() {
 		if (isText) {
-			String[] unmasked = new String[rowCount];
+			if (unmasked != null)
+				return unmasked;
+			String[] a = new String[rowCount];
 			for (int i = rowCount; --i >= 0;) {
-				unmasked[i] = getRawTextData(i);
+				a[i] = getRawTextData(i);
 			}
- 			return unmasked;
+			return unmasked = a;
 		} else {
 			return binaryData;
 		}

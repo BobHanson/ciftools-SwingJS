@@ -183,7 +183,7 @@ public class MessagePackCodec {
     }
 
     private void writeUTF(String data, DataOutputStream stream) throws IOException {
-        stream.write(data.getBytes(StandardCharsets.UTF_8));
+        stream.write(data.getBytes("UTF-8"));
     }
 
     private int determineUTFSize(String data) {
@@ -348,7 +348,7 @@ public class MessagePackCodec {
     }
 
     private String str(DataInputStream inputStream, int length) throws IOException {
-        return new String(bin(inputStream, length), StandardCharsets.UTF_8);
+        return new String(bin(inputStream, length), "UTF-8");
     }
 
     private Object[] array(DataInputStream inputStream, int length) throws IOException {

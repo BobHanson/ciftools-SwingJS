@@ -9,7 +9,7 @@ import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.ValueKind;
 
-import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -62,7 +62,11 @@ public class TextCifWriter {
         }
         output.append("\n");
 
-        return output.toString().getBytes(StandardCharsets.UTF_8);
+        try {
+			return output.toString().getBytes("UTF_8");
+		} catch (UnsupportedEncodingException e) {
+			return null;
+		}
     }
 
     private void writeCifSingleRecord(StringBuilder output, Category cifCategory, List<Column> columns) {

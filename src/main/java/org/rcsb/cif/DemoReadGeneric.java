@@ -58,19 +58,6 @@ public class DemoReadGeneric {
 //			52	niter=10	------PARSE binary (-GC)
 //			78	niter=10	------PARSE binary
 	
-	public static class Atom extends Point.Double {
-		double x,y,z;
-		public Atom(double x, double y, double z) {
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
-		
-		public String toString() {
-			return "[" + x + "," + y + "," + z + "]";
-		}
-	}
-
 	/**
 	 * environment flag to prevent unnecessary Swing classes from loading
 	 * 

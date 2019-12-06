@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.rcsb.cif.binary.codec.Codec;
+
 public class BaseCategory implements Category {
     private final String name;
     private final int rowCount;
@@ -58,14 +60,13 @@ public class BaseCategory implements Category {
         this.encodedColumns = encodedColumns;
         this.decodedColumns = new LinkedHashMap<>();
         try {
-            this.columnNamesEncoded = Stream.of(encodedColumns)
-                    .map(map -> ((Map<String, Object>) map).get("name"))
-                    .map(String.class::cast)
-                    .collect(Collectors.toList());
-            this.columnNamesLC = Stream.of(encodedColumns)
-                    .map(map -> ((String) ((Map<String, Object>) map).get("name")).toLowerCase())
-                    .map(String.class::cast)
-                    .collect(Collectors.toList());
+            this.columnNamesEncoded = new ArrayList<String>();
+            this.columnNamesLC = new ArrayList<String>();
+            for (int i = 0, n = encodedColumns.length; i < n; i++) {
+            	String s = Codec.getStringFromBytes((byte[]) ((Map<String, Object>) encodedColumns[i]).get("name"));
+            	this.columnNamesEncoded.add(s);
+            	this.columnNamesLC.add(s.toLowerCase());
+            }
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
@@ -95,25 +96,29 @@ public class BaseCategory implements Category {
     }
 
     protected Column getBinaryColumn(String name) {
-        Optional<Map<String, Object>> optional = find(name);
+        Map<String, Object> col = find(name);
         // cache decoded fields to reuse them if applicable
-        if (!optional.isPresent()) {
+        if (col == null) {
             return ModelFactory.createEmptyColumn(this.name, name);
         }
         if (decodedColumns.containsKey(name)) {
             return decodedColumns.get(name);
         }
-        Column decodedColumn = ModelFactory.createColumnBinary(this.name, name, optional.get());
+        Column decodedColumn = ModelFactory.createColumnBinary(this.name, name, col);
         decodedColumns.put(name, decodedColumn);
         return decodedColumn;
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Map<String, Object>> find(String name) {
-        return Stream.of(encodedColumns)
-                .map(m -> (Map<String, Object>) m)
-                .filter(m -> name.equalsIgnoreCase((String)m.get("name")))
-                .findFirst();
+    private Map<String, Object> find(String name) {
+    	for (int i = columnNamesEncoded.size(); --i >= 0;)
+    		if (columnNamesEncoded.get(i).equalsIgnoreCase(name))
+    			return (Map<String, Object>) encodedColumns[i];
+    	return null;
+//        return Stream.of(encodedColumns)
+//                .map(m -> (Map<String, Object>) m)
+//                .filter(m -> name.equalsIgnoreCase((String)m.get("name")))
+//                .findFirst();
     }
 
     @Override

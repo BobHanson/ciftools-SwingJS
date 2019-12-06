@@ -215,12 +215,19 @@ public class MessagePackCodec {
     @SuppressWarnings("unchecked")
     public Map<String, Object> decode(InputStream inputStream) throws IOException {
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-        Map<String, Object> map = (Map<String, Object>) decodeInternal(dataInputStream);
+        Map<String, Object> map = (Map<String, Object>) decodeInternal(dataInputStream, true);
         dataInputStream.close();
         return map;
     }
 
-    private Object decodeInternal(DataInputStream inputStream) throws IOException {
+    /**
+     * 
+     * @param inputStream
+     * @param decodeString true to also turn a UTF-8 byte[] into a new String (only for map names)
+     * @return the minimally decoded object
+     * @throws IOException
+     */
+    private Object decodeInternal(DataInputStream inputStream, boolean decodeString) throws IOException {
         final int int8 = inputStream.readByte();
         final int type = int8 & 0xFF;
 
@@ -241,7 +248,7 @@ public class MessagePackCodec {
 
         // FixStr
         if ((type & 0xE0) == 0xA0) {
-            return str(inputStream, type & 0x1F);
+            return str(inputStream, type & 0x1F, decodeString);
         }
 
         // negative FixInt
@@ -294,13 +301,13 @@ public class MessagePackCodec {
                 return inputStream.readInt();
             // str8
             case 0xD9:
-                return str(inputStream, inputStream.readByte() & 0xFF);
+                return str(inputStream, inputStream.readByte() & 0xFF, decodeString);
             // str16
             case 0xDA:
-                return str(inputStream, inputStream.readShort() & 0xFFFF);
+                return str(inputStream, inputStream.readShort() & 0xFFFF, decodeString);
             // str32
             case 0xDB:
-                return str(inputStream, readUnsignedInt(inputStream));
+                return str(inputStream, readUnsignedInt(inputStream), decodeString);
             // array16
             case 0xDC:
                 return array(inputStream, inputStream.readShort() & 0xFFFF);
@@ -318,10 +325,31 @@ public class MessagePackCodec {
         throw new IllegalArgumentException("Unknown MessagePack type 0x" + type);
     }
 
+//    static {
+//    	System.out.println(4294967295L + " == " + (-1 & 0xFFFFFFFFL));
+//    	System.out.println(-1 + " == " + (int) (-1 & 0xFFFFFFFFL));
+//    }
+    /**
+     * Actually, this will not work. Unsigned ints > Integer.MAX_VALUE must be cast as long.
+     * Just to be clear, (int) of (-1 & 0xFFFFFFFFL) is -1, not 2*Integer.MAX_VALUE + 1.
+     * 
+     * @param inputStream
+     * @return a normal integer, not an unsigned integer, actually
+     * @throws IOException
+     */
     private int readUnsignedInt(DataInputStream inputStream) throws IOException {
         return (int) (inputStream.readInt() & 0xFFFFFFFFL);
     }
 
+    /**
+     * JavaScript guarantees enumeration of a map in the order of entries added.
+     * No need for a linked list.
+     * 
+     * @param inputStream
+     * @param length
+     * @return
+     * @throws IOException
+     */
     private Map<String, Object> map(DataInputStream inputStream, int length) throws IOException {
     	// BH SwingJS 10% improvement in decoding speed for 3j9m
     	Map<String, Object> value = null;
@@ -336,7 +364,7 @@ public class MessagePackCodec {
     		 value= new LinkedHashMap<>();
     	}
         for (int i = 0; i < length; i++) {
-            value.put((String) decodeInternal(inputStream), decodeInternal(inputStream));
+            value.put((String) decodeInternal(inputStream, true), decodeInternal(inputStream, false));
         }
         return value;
     }
@@ -347,14 +375,32 @@ public class MessagePackCodec {
         return tmp;
     }
 
-    private String str(DataInputStream inputStream, int length) throws IOException {
-        return new String(bin(inputStream, length), "UTF-8");
+    /**
+     * Only for map names is it necessary to do the string conversion from bytes.
+     * 
+     * @param inputStream
+     * @param length
+     * @param asString
+     * @return
+     * @throws IOException
+     */
+    private Object str(DataInputStream inputStream, int length, boolean asString) throws IOException {
+    	byte[] bytes = bin(inputStream, length);
+        return (asString ? new String(bytes, "UTF-8") : bytes);
     }
 
+    /**
+     * Keep this simple.
+     * 
+     * @param inputStream
+     * @param length
+     * @return
+     * @throws IOException
+     */
     private Object[] array(DataInputStream inputStream, int length) throws IOException {
         final Object[] value = new Object[length];
         for (int i = 0; i < length; i++) {
-            value[i] = decodeInternal(inputStream);
+            value[i] = decodeInternal(inputStream, false);
         }
         return value;
     }

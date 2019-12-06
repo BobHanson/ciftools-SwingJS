@@ -4,6 +4,7 @@ import org.rcsb.cif.binary.data.EncodedData;
 import org.rcsb.cif.binary.data.EncodedDataFactory;
 import org.rcsb.cif.binary.encoding.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
@@ -55,12 +56,13 @@ public class Codec {
     @SuppressWarnings("unchecked")
     public static Object decode(Map<String, Object> encodedData) {
         EncodedData current = EncodedDataFactory.byteArray((byte[]) encodedData.get("data"));
-        Object[] encodingMaps = (Object[]) encodedData.get("encoding");
-        LinkedList<Encoding> encodings = Stream.of(encodingMaps)
-                .map(Map.class::cast)
-                .map(Codec::wrap)
-                .collect(Collectors.toCollection(LinkedList::new));
-        Collections.reverse(encodings);
+        LinkedList<Encoding> encodings = getListReversed((Object[]) encodedData.get("encoding"));
+//        Object[] encodingMaps = (Object[]) encodedData.get("encoding");
+//        LinkedList<Encoding> encodings = Stream.of(encodingMaps)
+//                .map(Map.class::cast)
+//                .map(Codec::wrap)
+//                .collect(Collectors.toCollection(LinkedList::new));
+//        Collections.reverse(encodings);
 
         for (Encoding encoding : encodings) {
             current = encoding.decode(current);
@@ -74,32 +76,53 @@ public class Codec {
      * @param encoding map representation of encoding
      * @return the concrete Encoding instance
      */
-    @SuppressWarnings("unchecked")
     private static Encoding wrap(Map encoding) {
-        String kind = (String) encoding.get("kind");
-        switch (kind) {
-            case "ByteArray":
+//        String kind = getStringFromBytes(encoding.get("kind"));
+    	byte[] kind = (byte[])encoding.get("kind");
+        switch (kind[0]) {
+            case 'B'://"ByteArray":
                 return new ByteArrayEncoding(encoding);
-            case "FixedPoint":
+            case 'F'://"FixedPoint":
                 return new FixedPointEncoding(encoding);
-            case "IntervalQuantization":
-                return new IntervalQuantizationEncoding(encoding);
-            case "RunLength":
+            case 'R'://"RunLength":
                 return new RunLengthEncoding(encoding);
-            case "Delta":
+            case 'D'://"Delta":
                 return new DeltaEncoding(encoding);
-            case "IntegerPacking":
-                return new IntegerPackingEncoding(encoding);
-            case "StringArray":
-                LinkedList<Encoding> outputEncoding = Stream.of((Object[]) encoding.get("dataEncoding"))
-                        .map(map -> wrap((Map<String, Object>) map))
-                        .collect(Collectors.toCollection(LinkedList::new));
-                LinkedList<Encoding> offsetEncoding = Stream.of((Object[]) encoding.get("offsetEncoding"))
-                                .map(map -> wrap((Map<String, Object>) map))
-                                .collect(Collectors.toCollection(LinkedList::new));
+            case 'I'://"IntervalQuantization":
+                return (kind[8] == 'Q' ? new IntervalQuantizationEncoding(encoding) 
+                		://"IntegerPacking":
+                			new IntegerPackingEncoding(encoding));
+            case 'S'://"StringArray":
+                LinkedList<Encoding> outputEncoding = getList((Object[])encoding.get("dataEncoding"));
+                LinkedList<Encoding> offsetEncoding = getList((Object[])encoding.get("offsetEncoding"));
                 return new StringArrayEncoding(encoding, outputEncoding, offsetEncoding);
             default:
-                throw new IllegalArgumentException("Unsupported Encoding kind: " + kind);
+                throw new IllegalArgumentException("Unsupported Encoding kind: " + getStringFromBytes(kind));
         }
     }
+
+    @SuppressWarnings("unchecked")
+	private static LinkedList<Encoding> getList(Object[] a) {
+		LinkedList<Encoding> list = new LinkedList<>();
+		for (int i = 0, n = a.length; i < n; i++)
+			list.add(wrap((Map<String, Object>) a[i]));
+		return list;
+	}
+
+    @SuppressWarnings("unchecked")
+	private static LinkedList<Encoding> getListReversed(Object[] a) {
+		LinkedList<Encoding> list = new LinkedList<>();
+		for (int i = a.length; --i >= 0;)
+			list.add(wrap((Map<String, Object>) a[i]));
+		return list;
+	}
+
+	public static String getStringFromBytes(byte[] bytes) {
+		try {
+			return new String(bytes, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			return null;
+		}
+	}
+    
 }

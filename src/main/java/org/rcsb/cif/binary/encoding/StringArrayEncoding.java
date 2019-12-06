@@ -27,7 +27,7 @@ public class StringArrayEncoding implements Encoding<ByteArray> {
     }
 
     public StringArrayEncoding(Map encoding, LinkedList<Encoding> outputEncoding, LinkedList<Encoding> offsetEncoding) {
-        this((String) encoding.get("stringData"), (byte[]) encoding.get("offsets"), outputEncoding, offsetEncoding);
+        this(Codec.getStringFromBytes((byte[]) encoding.get("stringData")), (byte[]) encoding.get("offsets"), outputEncoding, offsetEncoding);
     }
 
     public LinkedList<Encoding> getDataEncoding() {

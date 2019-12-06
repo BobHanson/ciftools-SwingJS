@@ -16,6 +16,7 @@ import org.rcsb.cif.model.BlockGeneric;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFileGeneric;
 import org.rcsb.cif.model.FloatColumn;
+import org.rcsb.cif.model.StrColumn;
 
 /**
  * A class that demonstrates "generic" cif reading -- where
@@ -243,11 +244,11 @@ public class DemoReadGeneric {
 				System.out.println("getting data");
 			}
 			if (process) {
-				silent = false;
+				silent = true;//false;
 				t1 = (silent ? 0 : System.nanoTime());
-				for (int i = 0; i < 11; i++)
+				for (int i = 0; i < 1; i++)
 					process(cifFile, mode | MODE_SILENT);
-				t1 = (silent ? 0 : reportTime(t1, 11, "processStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName()));
+				t1 = (silent ? 0 : reportTime(t1, 1, "processStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName()));
 			}
 
 		}
@@ -307,11 +308,11 @@ public class DemoReadGeneric {
 		int nAtoms = atomSite.getRowCount();
 		if (!silent)
 			System.out.println("nAtoms=" + nAtoms);
+		// obtain entry id
+//		String entryId = ((StrColumn) data.getCategory("entry").getColumn("id")).get(0);
+//		System.out.println(entryId);
 		boolean useFunctional = false;
 		if (useFunctional) {
-			// obtain entry id
-//			String entryId = ((StrColumn) data.getCategory("entry").getColumn("id")).get(0);
-//			System.out.println(entryId);
 
 //		List<Atom> atoms = new ArrayList<Atom>(aatoms.length);
 
@@ -323,7 +324,7 @@ public class DemoReadGeneric {
 			FloatColumn cy = ((FloatColumn) atomSite.getColumn("cartn_y"));
 			FloatColumn cz = ((FloatColumn) atomSite.getColumn("cartn_z"));
 			OptionalDouble averageCartnX = cx.values().average();
-			if (true || !silent) {
+			if (!silent) {
 				t1 = reportTime(t1, "functional average nAtoms=" + nAtoms);
 				System.out.print(type);
 				averageCartnX.ifPresent(System.out::println);

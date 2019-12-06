@@ -40,24 +40,24 @@ public class BinaryCifReader {
             inputStream.close();
         }
 
-        String versionString = (String) unpacked.get("version");
+        String versionString = Codec.getStringFromBytes((byte[]) unpacked.get("version"));
         if (!versionString.startsWith(Codec.MIN_VERSION)) {
             throw new ParsingException("Unsupported format version. Current " + versionString +
                     ", required " + Codec.MIN_VERSION + ".");
         }
 
-        String encoder = (String) unpacked.get("encoder");
+        String encoder = Codec.getStringFromBytes((byte[]) unpacked.get("encoder"));
 
         List<Block> dataBlocks = Stream.of((Object[]) (unpacked.get("dataBlocks")))
                 .map(entry -> {
                     Map<String, Object> map = (Map<String, Object>) entry;
-                    String header = (String) map.get("header");
+                    String header = Codec.getStringFromBytes((byte[]) map.get("header"));
                     Map<String, Category> categories = new LinkedHashMap<>();
 
                     try {
                         for (Object o : (Object[]) map.get("categories")) {
                             Map<String, Object> cat = (Map<String, Object>) o;
-                            String name = (String) cat.get("name");
+                            String name = Codec.getStringFromBytes((byte[]) cat.get("name"));
                             categories.put(name.substring(1), createProxyCategory(cat));
                         }
 
@@ -83,16 +83,11 @@ public class BinaryCifReader {
 //        return ModelFactory.createCategoryBinary(name, rowCount, encodedFields);
 //    }
 //    
-    private Category createProxyCategory(Map<String, Object> encodedCategory) {
-        // if rowCount ever throws NPEs again: the problem is a wrongly parsed map length in MessagePackCodec
-        String name = ((String) encodedCategory.get("name")).substring(1);
-        Object rawColumns = encodedCategory.get("columns");
-        int rowCount = (int) encodedCategory.get("rowCount");
-
-        // it is a conventional category with multiple rows
-        Object[] encodedFields = (Object[]) rawColumns;
-        
-        return new ProxyCategory(name, rowCount, encodedFields);
-    }
+	private Category createProxyCategory(Map<String, Object> encodedCategory) {
+		return new ProxyCategory(
+				(Codec.getStringFromBytes((byte[]) encodedCategory.get("name"))).substring(1),
+				(int) encodedCategory.get("rowCount"), 
+				(Object[]) encodedCategory.get("columns"));
+	}
 
 }

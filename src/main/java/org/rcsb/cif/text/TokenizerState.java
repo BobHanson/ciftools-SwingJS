@@ -1,16 +1,16 @@
 package org.rcsb.cif.text;
 
-import org.rcsb.cif.ParsingException;
-import org.rcsb.cif.model.BaseCategory;
-import org.rcsb.cif.model.Column;
-import org.rcsb.cif.model.ModelFactory;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-class TokenizerState {
+import org.rcsb.cif.ParsingException;
+import org.rcsb.cif.generic.Platform;
+import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.Column;
+import org.rcsb.cif.model.ModelFactory;
+
+public class TokenizerState {
     private final String data;
     private final int length;
 
@@ -22,9 +22,11 @@ class TokenizerState {
     private int tokenStart;
     private int tokenEnd;
 
-    TokenizerState(String data) {
+    private TextReader reader;
+    
+    public TokenizerState(TextReader reader, String data) {
+    	this.reader = reader;
         this.data = data;
-
         this.position = 0;
         this.length = data.length();
         this.tokenStart = 0;
@@ -266,7 +268,7 @@ class TokenizerState {
     /**
      * Move to the next token.
      */
-    private void moveNextInternal() {
+    private void moveNext() {
         int prev = skipWhitespace();
 
         // end of file reached
@@ -323,62 +325,51 @@ class TokenizerState {
         }
     }
 
-    /**
-     * Move to the next non-comment token.
-     */
-    void moveNext() {
-        moveNextInternal();
-        while (tokenType == CifTokenType.COMMENT) {
-            moveNextInternal();
-        }
-    }
+	/**
+	 * Move to the next non-comment token.
+	 */
+	private void moveNextNoComment() {
+		do {
+			moveNext();
+		} while (tokenType == CifTokenType.COMMENT);
+	}
 
     /**
      * Reads a category containing a single row.
      * @param ctx the context values will be assigned to
      * @throws ParsingException throws when file is malformed
      */
-    void handleSingle(FrameContext ctx) throws ParsingException {
-    	handleSingle(ctx, false);
-    }
-
-	void handleSingle(FrameContext ctx, boolean isGeneric) throws ParsingException {
+	private void handleSingle(FrameContext ctx) throws ParsingException {
 
 		final int nsStart = tokenStart;
 		final int nsEnd = getNamespaceEnd();
 		final String name = getNamespace(nsEnd);
-		final Map<String, Column> fields = new LinkedHashMap<>();
-		final String categoryName = name.substring(1);
+		@SuppressWarnings("unchecked")
+		final Map<String, Column> fields = (Map<String, Column>) Platform.getMap();
+		String categoryName = name.substring(1).toLowerCase();
 		ModelFactory.ensureModelPropertiesLoaded(categoryName);
 		while (tokenType == CifTokenType.COLUMN_NAME && isNamespace(nsStart, nsEnd)) {
-			String columnName = getTokenString().substring(name.length() + 1);
-			moveNext();
+			String columnName = getTokenString().substring(name.length() + 1).toLowerCase();
+			moveNextNoComment();
 			if (tokenType != CifTokenType.VALUE) {
 				throw new ParsingException("Expected value.", lineNumber);
 			}
 			Column cifColumn = ModelFactory.createColumnText(categoryName, columnName, data, tokenStart, tokenEnd);
-			fields.put(columnName.toLowerCase(), cifColumn);
-			moveNext();
+			fields.put(columnName, cifColumn);
+			moveNextNoComment();
 		}
-		ctx.getCategories().put(categoryName.toLowerCase(), 				
-				isGeneric ? new BaseCategory(categoryName, fields)
-						:
-				ModelFactory.createCategoryText(categoryName, fields));
+		ctx.getCategories().put(categoryName, reader.createCategory(categoryName, fields));
 	}
 
     /**
      * Reads a loop.
      * @param ctx the context values will be assigned to
      */
-    void handleLoop(FrameContext ctx) {
-    	handleLoop(ctx, false);
-    }
-    
-	void handleLoop(FrameContext ctx, boolean isGeneric) {
+    private void handleLoop(FrameContext ctx) {
 		final int loopLine = lineNumber;
 
-		moveNext();
-		final String name = getNamespace(getNamespaceEnd());
+		moveNextNoComment();
+		String name = getNamespace(getNamespaceEnd());
 
 		// performance 1.2: resizing of token lists is pronounced - provide initial
 		// guess to avoid excessive resizing
@@ -389,45 +380,115 @@ class TokenizerState {
 		final List<List<Integer>> start = new ArrayList<>(columnCountEstimate);
 		final List<List<Integer>> end = new ArrayList<>(columnCountEstimate);
 		
-		String categoryName = name.substring(1);
+		String categoryName = name.substring(1).toLowerCase();
 		ModelFactory.ensureModelPropertiesLoaded(categoryName);
-
-		int tokenCount = 0;
 		while (tokenType == CifTokenType.COLUMN_NAME) {
 			String colName = getTokenString().substring(name.length() + 1);
 			columnNamesEncoded.add(colName);
 			columnNamesLC.add(colName.toLowerCase());
-			moveNext();
+			moveNextNoComment();
 			start.add(new ArrayList<>(rowCountEstimate));
 			end.add(new ArrayList<>(rowCountEstimate));
 		}
-
+		int colCount = start.size();
+		int iToken = 0;
 		while (tokenType == CifTokenType.VALUE) {
-			int i = tokenCount % columnNamesLC.size();
+			int i = iToken++ % columnNamesLC.size();
 			start.get(i).add(tokenStart);
 			end.get(i).add(tokenEnd);
-			moveNext();
-			tokenCount++;
+			moveNextNoComment();
 		}
-
-		if (start.size() % columnNamesLC.size() != 0) {
+		if (colCount % columnNamesLC.size() != 0) {
 			throw new ParsingException("The number of values for loop starting at line " + loopLine
 					+ " is not a multiple of the number of columns.");
 		}
-
-		Map<String, Column> columns = new LinkedHashMap<>();
-		for (int i = 0; i < start.size(); i++) {
+		@SuppressWarnings("unchecked")
+		Map<String, Column> columns = (Map<String, Column>) Platform.getMap();
+		int nRows =  (colCount == 0 ? 0 : start.get(0).size());
+		for (int i = 0; i < colCount; i++) {
 			Column cifColumn = ModelFactory.createColumnText(categoryName, columnNamesEncoded.get(i), data,
-					start.get(i).stream().mapToInt(j -> j).toArray(), end.get(i).stream().mapToInt(j -> j).toArray());
+					toArray(start.get(i), new int[nRows]), toArray(end.get(i), new int[nRows]));
 			columns.put(columnNamesLC.get(i), cifColumn);
 		}
-
-		ctx.getCategories().put(categoryName.toLowerCase(), isGeneric ?
-
-				new BaseCategory(categoryName, columns) :
-
-				ModelFactory.createCategoryText(categoryName.toLowerCase(), columns));
+		ctx.getCategories().put(categoryName, reader.createCategory(categoryName, columns));
 	}
-    
 
+	private int[] toArray(List<Integer> list, int[] a) {
+		for (int i = a.length; --i >= 0;)
+			a[i] = list.get(i).intValue();
+		return a;
+	}
+
+	public List<?> getDataBlocks(List<?> dataBlocks) {	
+		FrameContext blockCtx = new FrameContext();
+		String blockHeader = "";
+		boolean inSaveFrame = false;
+
+		// the next three initial values are never used in valid files
+		List<Block> saveFrames = new ArrayList<>();
+		FrameContext saveCtx = new FrameContext();
+		Block saveFrame = reader.createBlock(saveCtx.getCategories(), "");
+
+		moveNextNoComment();
+		while (getTokenType() != CifTokenType.END) {
+			CifTokenType token = getTokenType();
+
+			// data block
+			if (token == CifTokenType.DATA) {
+				if (inSaveFrame) {
+					throw new ParsingException("Unexpected data block inside a save frame.", getLineNumber());
+				}
+				if (blockCtx.getCategories().size() > 0) {
+					Block block = reader.createBlock(blockCtx.getCategories(), blockHeader);
+					reader.addBlock(block, dataBlocks, saveFrames);
+				}
+				blockHeader = getData().substring(getTokenStart() + 5, getTokenEnd());
+				blockCtx = new FrameContext();
+				saveFrames.clear();
+				moveNextNoComment();
+				// save frame
+			} else if (getTokenType() == CifTokenType.SAVE) {
+				final String saveHeader = getData().substring(getTokenStart() + 5,
+						getTokenEnd());
+				if (saveHeader.isEmpty()) {
+					if (saveCtx.getCategories().size() > 0) {
+						saveFrames.add(saveFrame);
+					}
+					inSaveFrame = false;
+				} else {
+					if (inSaveFrame) {
+						throw new ParsingException("Save frames cannot be nested.", getLineNumber());
+					}
+					inSaveFrame = true;
+					final String safeHeader = getData().substring(getTokenStart() + 5,
+							getTokenEnd());
+					saveCtx = new FrameContext();
+					saveFrame = reader.createBlock(saveCtx.getCategories(), safeHeader);
+				}
+				moveNextNoComment();
+				// loop
+			} else if (token == CifTokenType.LOOP) {
+				handleLoop(inSaveFrame ? saveCtx : blockCtx);
+				// single row
+			} else if (token == CifTokenType.COLUMN_NAME) {
+				handleSingle(inSaveFrame ? saveCtx : blockCtx);
+				// out of options
+			} else {
+				throw new ParsingException("Unexpected token (" + token + "). Expected data_, loop_, or data name.",
+						getLineNumber());
+			}
+		}
+
+		// check if the latest save frame was terminated
+		if (inSaveFrame) {
+			throw new ParsingException("Unfinished save frame (" + saveFrame.getBlockHeader() + ").",
+					getLineNumber());
+		}
+
+		if (blockCtx.getCategories().size() > 0 || saveFrames.size() > 0) {
+			Block block = reader.createBlock(blockCtx.getCategories(), blockHeader);
+			reader.addBlock(block, dataBlocks, saveFrames);
+		}
+		return dataBlocks;
+	}
 }

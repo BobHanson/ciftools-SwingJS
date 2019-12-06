@@ -1,9 +1,8 @@
-package org.rcsb.cif.binary;
+package org.rcsb.cif.generic;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,11 +11,7 @@ import java.util.stream.Stream;
 import org.rcsb.cif.CifOptions;
 import org.rcsb.cif.ParsingException;
 import org.rcsb.cif.binary.codec.Codec;
-import org.rcsb.cif.model.BaseBlockGeneric;
-import org.rcsb.cif.model.BinaryFileGeneric;
-import org.rcsb.cif.model.BlockGeneric;
 import org.rcsb.cif.model.Category;
-import org.rcsb.cif.model.CifFileGeneric;
 import org.rcsb.cif.model.ProxyCategory;
 
 public class BinaryCifReaderGeneric {
@@ -64,7 +59,7 @@ public class BinaryCifReaderGeneric {
                 .map(entry -> {
                     Map<String, Object> map = (Map<String, Object>) entry;
                     String header = Codec.getStringFromBytes((byte[]) map.get("header"));
-                    Map<String, Category> categories = new LinkedHashMap<>();
+                    Map<String, Category> categories = (Map<String, Category>) Platform.getMap();
 
                     try {
                         for (Object o : (Object[]) map.get("categories")) {

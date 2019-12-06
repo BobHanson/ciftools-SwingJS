@@ -1,13 +1,12 @@
-package org.rcsb.cif.model;
+package org.rcsb.cif.generic;
 
 import java.util.List;
 
-public interface BlockGeneric {
+import org.rcsb.cif.model.BaseCategory;
+import org.rcsb.cif.model.Block;
 
-	BaseCategory getCategory(String name);
+public interface BlockGeneric extends Block {
 
 	List<BlockGeneric> getSaveFrames();
-
-	String getBlockHeader();
 
 }

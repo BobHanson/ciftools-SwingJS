@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BaseBlock implements Block {
+public class BaseBlock implements CifBlock {
     private final Map<String, Category> categories;
-    private final List<Block> saveFrames;
+    private final List<CifBlock> saveFrames;
     private final String header;
 
-    public BaseBlock(Map<String, Category> categories, String header, List<Block> saveFrames) {
+    public BaseBlock(Map<String, Category> categories, String header, List<CifBlock> saveFrames) {
         this.categories = categories;
         this.saveFrames = saveFrames;
         this.header = header;
@@ -36,7 +36,7 @@ public class BaseBlock implements Block {
     }
 
     @Override
-    public List<Block> getSaveFrames() {
+    public List<CifBlock> getSaveFrames() {
         return saveFrames;
     }
 

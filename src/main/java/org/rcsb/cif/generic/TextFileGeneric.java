@@ -1,12 +1,13 @@
-package org.rcsb.cif.model;
+package org.rcsb.cif.generic;
 
 import java.util.List;
 
 public class TextFileGeneric implements CifFileGeneric {
     private final List<BlockGeneric> blocks;
 
-    public TextFileGeneric(List<BlockGeneric> blocks) {
-        this.blocks = blocks;
+    @SuppressWarnings("unchecked")
+	public TextFileGeneric(List<?> blocks) {
+        this.blocks = (List<BlockGeneric>) blocks;
     }
 
     @Override

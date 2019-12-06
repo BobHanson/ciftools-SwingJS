@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class CifBuilder {
     private final CifFile cifFile;
-    private final List<Block> blocks;
+    private final List<CifBlock> blocks;
 
     /**
      * Create a new builder instance.
@@ -48,7 +48,7 @@ public class CifBuilder {
      * @return this CifBuilder instance
      */
     CifBuilder digest(BlockBuilder blockBuilder) {
-        Block block = new BaseBlock(blockBuilder.getCategories(), blockBuilder.getBlockName());
+        CifBlock block = new BaseBlock(blockBuilder.getCategories(), blockBuilder.getBlockName());
         blocks.add(block);
         return this;
     }
@@ -76,7 +76,7 @@ public class CifBuilder {
      * @param block the block to add
      * @return this CifBuilder instance
      */
-    public CifBuilder addBlock(Block block) {
+    public CifBuilder addBlock(CifBlock block) {
         blocks.add(block);
         return this;
     }

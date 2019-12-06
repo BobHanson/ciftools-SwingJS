@@ -1,12 +1,13 @@
-package org.rcsb.cif;
+package org.rcsb.cif.generic;
 
+import org.rcsb.cif.CifOptions;
+import org.rcsb.cif.ParsingException;
+import org.rcsb.cif.CifOptions.CifOptionsBuilder;
+import org.rcsb.cif.CifOptions.CifOptionsBuilder.FileFormat;
 import org.rcsb.cif.binary.BinaryCifReader;
-import org.rcsb.cif.binary.BinaryCifReaderGeneric;
 import org.rcsb.cif.binary.BinaryCifWriter;
 import org.rcsb.cif.model.CifFile;
-import org.rcsb.cif.model.CifFileGeneric;
 import org.rcsb.cif.text.TextCifReader;
-import org.rcsb.cif.text.TextCifReaderGeneric;
 import org.rcsb.cif.text.TextCifWriter;
 
 import java.io.BufferedInputStream;

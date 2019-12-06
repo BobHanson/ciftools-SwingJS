@@ -1,8 +1,13 @@
-package org.rcsb.cif.model;
+package org.rcsb.cif.generic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.rcsb.cif.model.BaseCategory;
+import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.Category;
+import org.rcsb.cif.model.ModelFactory;
 
 /**
  * A simpler interface that does not require generation
@@ -17,12 +22,13 @@ public class BaseBlockGeneric implements BlockGeneric {
     protected final String header;
 
     public BaseBlockGeneric(Map<String, Category> categories, String header) {
-    	this(categories, header, new ArrayList<BlockGeneric>());
+    	this(categories, header, new ArrayList<Block>());
 	}
 
-    public BaseBlockGeneric(Map<String, Category> categories, String header, List<BlockGeneric> saveFrames) {
+    @SuppressWarnings({ "unchecked" })
+	public BaseBlockGeneric(Map<String, Category> categories, String header, List<?> saveFrames) {
         this.categories = categories;
-        this.saveFrames = saveFrames;
+        this.saveFrames =  (List<BlockGeneric>) saveFrames;
         this.header = header;
     }
 
@@ -32,7 +38,6 @@ public class BaseBlockGeneric implements BlockGeneric {
         return (BaseCategory) categories.computeIfAbsent(name, ModelFactory::createEmptyCategory);
     }
 
-    @Override
     public List<BlockGeneric> getSaveFrames() {
         return saveFrames;
     }
@@ -40,6 +45,12 @@ public class BaseBlockGeneric implements BlockGeneric {
 	@Override
 	public String getBlockHeader() {
 		return header;
+	}
+
+	@Override
+	public List<String> getCategoryNames() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

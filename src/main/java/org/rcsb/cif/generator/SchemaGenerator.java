@@ -57,7 +57,7 @@ class SchemaGenerator {
     private static final StringJoiner CLASS_MAP_LOOKUP = new StringJoiner("\n");
 
     private void writeClasses() throws IOException {
-        writeBlockInterface(Block.class.getSimpleName(), schema, OUTPUT_PATH);
+        writeBlockInterface(CifBlock.class.getSimpleName(), schema, OUTPUT_PATH);
         writeBlockImpl(BaseBlock.class.getSimpleName(), schema, OUTPUT_PATH);
         Files.write(OUTPUT_PATH.resolve("field-name-class-map.csv"), CLASS_MAP_LOOKUP.toString().getBytes());
     }
@@ -78,7 +78,7 @@ class SchemaGenerator {
         getters.add("    List<String> getCategoryNames();");
         getters.add("");
 
-        getters.add("    List<" + Block.class.getSimpleName() + "> getSaveFrames();");
+        getters.add("    List<" + CifBlock.class.getSimpleName() + "> getSaveFrames();");
         getters.add("");
 
         for (Map.Entry<String, Table> entry : content.entrySet()) {
@@ -152,7 +152,7 @@ class SchemaGenerator {
         output.add("import java.util.Map;");
         output.add("");
         output.add("@Generated(\"org.rcsb.cif.generator.SchemaGenerator\")");
-        output.add("public class " + className + " implements " + Block.class.getSimpleName() + " {");
+        output.add("public class " + className + " implements " + CifBlock.class.getSimpleName() + " {");
 
         // constructor
         output.add("    public " + className + "(Map<String, Category> categories, String header) {");
@@ -322,7 +322,7 @@ class SchemaGenerator {
     ).collect(Collectors.toList());
 
     private final Map<String, Table> schema;
-    private final Map<String, Block> categories;
+    private final Map<String, CifBlock> categories;
     private final Map<String, String> links;
 
     private void getFieldData() {
@@ -420,7 +420,7 @@ class SchemaGenerator {
         }
     }
 
-    private List<String> getCode(Block saveFrame) {
+    private List<String> getCode(CifBlock saveFrame) {
         Column code = getField("item_type", "code", saveFrame);
         if (code.isDefined() && code.getRowCount() > 0) {
             return Stream.concat(Stream.of(code.getStringData(0)), getEnums(saveFrame)).collect(Collectors.toList());
@@ -429,7 +429,7 @@ class SchemaGenerator {
         }
     }
 
-    private Stream<String> getEnums(Block saveFrame) {
+    private Stream<String> getEnums(CifBlock saveFrame) {
         Column value = getField("item_enumeration", "value", saveFrame);
         if (value != null) {
             return IntStream.range(0, value.getRowCount())
@@ -439,7 +439,7 @@ class SchemaGenerator {
         }
     }
 
-    private String getSubCategory(Block saveFrame) {
+    private String getSubCategory(CifBlock saveFrame) {
         try {
             Column value = getField("item_sub_category", "id", saveFrame);
             return value.getStringData(0);
@@ -448,7 +448,7 @@ class SchemaGenerator {
         }
     }
 
-    private String getDescription(Block saveFrame) {
+    private String getDescription(CifBlock saveFrame) {
         Column value = getField("item_description", "description", saveFrame);
         String escapedDescription = escape(value.getStringData(0));
         return Pattern.compile("\n").splitAsStream(escapedDescription)
@@ -458,13 +458,13 @@ class SchemaGenerator {
                 .replaceAll("(\\[[1-3]])+", "");
     }
 
-    private Column getField(String category, String field, Block saveFrame) {
+    private Column getField(String category, String field, CifBlock saveFrame) {
         Category cat = saveFrame.getCategory(category);
         if (cat.isDefined()) {
             return cat.getColumn(field);
         } else {
             String linkName = links.get(saveFrame.getBlockHeader());
-            Block block = categories.get(linkName);
+            CifBlock block = categories.get(linkName);
             if (block != null) {
                 return getField(category, field, block);
             } else {

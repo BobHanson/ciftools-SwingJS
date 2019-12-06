@@ -1,6 +1,5 @@
 package org.rcsb.cif;
 
-import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -12,11 +11,11 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.OptionalDouble;
 
-import org.rcsb.cif.model.BlockGeneric;
+import org.rcsb.cif.generic.BlockGeneric;
+import org.rcsb.cif.generic.CifFileGeneric;
+import org.rcsb.cif.generic.CifIOGeneric;
 import org.rcsb.cif.model.Category;
-import org.rcsb.cif.model.CifFileGeneric;
 import org.rcsb.cif.model.FloatColumn;
-import org.rcsb.cif.model.StrColumn;
 
 /**
  * A class that demonstrates "generic" cif reading -- where
@@ -43,6 +42,14 @@ public class DemoReadGeneric {
 
 	// baseline data for 3j9m (ms)
 
+// Java (ms)
+//
+//		         4	niter=11	processStream BINARY StreamParser
+//			  	 3	niter=11	processStream BINARY StreamParser
+//				 4	niter=11	processStream BINARY StreamParser
+//				52	niter=10	------PARSE binary (-GC)
+//				78	niter=10	------PARSE binary
+//
 // JavaScript
 //
 //	          5    niter=11    processStream BINARY StreamParser
@@ -50,13 +57,19 @@ public class DemoReadGeneric {
 //			146    niter=10    ------PARSE binary (-GC)
 //			146    niter=10    ------PARSE binary
 //	
+	
+// after optimization:
+	
 // Java (ms)
 //
-//	         4	niter=11	processStream BINARY StreamParser
-//		  	 3	niter=11	processStream BINARY StreamParser
-//			 4	niter=11	processStream BINARY StreamParser
-//			52	niter=10	------PARSE binary (-GC)
-//			78	niter=10	------PARSE binary
+//			8	niter=10	------PARSE binary (-GC)
+//			19	niter=10	------PARSE binary
+
+// JavaScript (ms)	
+//
+//			60    niter=10    ------PARSE binary (-GC)	
+//			60    niter=10    ------PARSE binary
+	
 	
 	/**
 	 * environment flag to prevent unnecessary Swing classes from loading
@@ -94,7 +107,7 @@ public class DemoReadGeneric {
 
 	public static void main(String[] args) {
 		//String pdbId = "1acj";
-		String pdbId = "3j9m";
+		String pdbId = "3j9m";//"3j3q";//"4v4g";//;
 		try {
 			
 			long t0 = System.nanoTime();
@@ -143,10 +156,8 @@ public class DemoReadGeneric {
 		abstract void setMode(int mode);
 	   
 	   protected void parseTest(int mode) throws IOException {
-			int binaryOptions = MODE_READ_PARSE_BINARY | mode;
-			int textOptions = MODE_READ_PARSE_TEXT | mode;
-			test(binaryOptions);
-			//test(textOptions);
+			test(MODE_READ_PARSE_BINARY | mode);
+			//test(MODE_READ_PARSE_TEXT | mode);
 		}
 
 		private void test(int mode) throws IOException {
@@ -209,7 +220,7 @@ public class DemoReadGeneric {
 		@Override
 		void setMode(int mode) {
 			try {
-				inputStream = loadStream(pdbId, MODE_READ_PARSE_BINARY | (mode & MODE_LOCAL));
+				inputStream = loadStream(pdbId, mode);
 			} catch (IOException e) {
 			}
 //			

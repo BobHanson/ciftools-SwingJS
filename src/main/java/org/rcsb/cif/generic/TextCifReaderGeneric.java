@@ -1,114 +1,63 @@
-package org.rcsb.cif.text;
-
-import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.ParsingException;
-import org.rcsb.cif.model.BaseBlock;
-import org.rcsb.cif.model.BaseBlockGeneric;
-import org.rcsb.cif.model.Block;
-import org.rcsb.cif.model.BlockGeneric;
-import org.rcsb.cif.model.TextFile;
-import org.rcsb.cif.model.TextFileGeneric;
+package org.rcsb.cif.generic;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TextCifReaderGeneric {
-    private final CifOptions options;
+import org.rcsb.cif.CifOptions;
+import org.rcsb.cif.ParsingException;
+import org.rcsb.cif.model.BaseCategory;
+import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.Category;
+import org.rcsb.cif.model.Column;
+import org.rcsb.cif.text.TextReader;
+import org.rcsb.cif.text.TokenizerState;
 
-    public TextCifReaderGeneric(CifOptions options) {
-        this.options = options;
-    }
+public class TextCifReaderGeneric implements TextReader {
+	private final CifOptions options;
 
-    public TextFileGeneric read(InputStream inputStream) throws ParsingException, IOException {
-        String content = new BufferedReader(new InputStreamReader(inputStream))
-                .lines()
-                .collect(Collectors.joining("\n"));
-        inputStream.close();
-        return readText(content);
-    }
+	public TextCifReaderGeneric(CifOptions options) {
+		this.options = options;
+	}
 
-    public TextFileGeneric readText(String data) throws ParsingException {
-        if (data.isEmpty()) {
-            throw new ParsingException("Cannot parse empty file.");
-        }
+	public TextFileGeneric read(InputStream inputStream) throws ParsingException, IOException {
+		String content = new BufferedReader(new InputStreamReader(inputStream)).lines()
+				.collect(Collectors.joining("\n"));
+		inputStream.close();
+		return readText(content);
+	}
 
-        final List<BlockGeneric> dataBlocks = new ArrayList<>();
-        final TokenizerState tokenizer = new TokenizerState(data);
-        String blockHeader = "";
+	public TextFileGeneric readText(String data) throws ParsingException {
+		if (data.isEmpty()) {
+			throw new ParsingException("Cannot parse empty file.");
+		}
+		List<?> dataBlocks = new ArrayList<>();
+		new TokenizerState((TextReader) this, data).getDataBlocks(dataBlocks);
+		return new TextFileGeneric(dataBlocks);
+	}
 
-        FrameContext blockCtx = new FrameContext();
+	@Override
+	public Block createBlock(Map<String, Category> categories, String header) {
+		return new BaseBlockGeneric(categories, header);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addBlock(Block block, List<?> dataBlocks, List<?> saveFrames) {
+		((List<BlockGeneric>)dataBlocks).add((BlockGeneric) block);
+		((BaseBlockGeneric)block).getSaveFrames().addAll((Collection<? extends BlockGeneric>) saveFrames);
+	}
+	
+    @Override
+	public Category createCategory(String name, Map<String, Column> columns) {
+		return new BaseCategory(name, columns);
+	}
+    
 
-        boolean inSaveFrame = false;
-
-        // the next three initial values are never used in valid files
-        List<BlockGeneric> saveFrames = new ArrayList<>();
-        FrameContext saveCtx = new FrameContext();
-        BlockGeneric saveFrame = new BaseBlockGeneric(saveCtx.getCategories(), "");
-
-        tokenizer.moveNext();
-        while (tokenizer.getTokenType() != CifTokenType.END) {
-            CifTokenType token = tokenizer.getTokenType();
-
-            // data block
-            if (token == CifTokenType.DATA) {
-                if (inSaveFrame) {
-                    throw new ParsingException("Unexpected data block inside a save frame.", tokenizer.getLineNumber());
-                }
-                if (blockCtx.getCategories().size() > 0) {
-                    BaseBlockGeneric block = new BaseBlockGeneric(blockCtx.getCategories(), blockHeader);
-                    dataBlocks.add(block);
-                    block.getSaveFrames().addAll(saveFrames);
-                }
-                blockHeader = tokenizer.getData().substring(tokenizer.getTokenStart() + 5, tokenizer.getTokenEnd());
-                blockCtx = new FrameContext();
-                saveFrames.clear();
-                tokenizer.moveNext();
-                // save frame
-            } else if (tokenizer.getTokenType() == CifTokenType.SAVE) {
-                final String saveHeader = tokenizer.getData().substring(tokenizer.getTokenStart() + 5, tokenizer.getTokenEnd());
-                if (saveHeader.isEmpty()) {
-                    if (saveCtx.getCategories().size() > 0) {
-                        saveFrames.add(saveFrame);
-                    }
-                    inSaveFrame = false;
-                } else {
-                    if (inSaveFrame) {
-                        throw new ParsingException("Save frames cannot be nested.", tokenizer.getLineNumber());
-                    }
-                    inSaveFrame = true;
-                    final String safeHeader = tokenizer.getData().substring(tokenizer.getTokenStart() + 5, tokenizer.getTokenEnd());
-                    saveCtx = new FrameContext();
-                    saveFrame = new BaseBlockGeneric(saveCtx.getCategories(), safeHeader);
-                }
-                tokenizer.moveNext();
-                // loop
-            } else if (token == CifTokenType.LOOP) {
-                tokenizer.handleLoop(inSaveFrame ? saveCtx : blockCtx, true);
-                // single row
-            } else if (token == CifTokenType.COLUMN_NAME) {
-                tokenizer.handleSingle(inSaveFrame ? saveCtx : blockCtx, true);
-                // out of options
-            } else {
-                throw new ParsingException("Unexpected token (" + token + "). Expected data_, loop_, or data name.", tokenizer.getLineNumber());
-            }
-        }
-
-        // check if the latest save frame was terminated
-        if (inSaveFrame) {
-            throw new ParsingException("Unfinished save frame (" + saveFrame.getBlockHeader() + ").", tokenizer.getLineNumber());
-        }
-
-        if (blockCtx.getCategories().size() > 0 || saveFrames.size() > 0) {
-            BaseBlockGeneric block = new BaseBlockGeneric(blockCtx.getCategories(), blockHeader);
-            dataBlocks.add(block);
-            block.getSaveFrames().addAll(saveFrames);
-        }
-
-        return new TextFileGeneric(dataBlocks);
-    }
 }

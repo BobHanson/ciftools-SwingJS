@@ -1,7 +1,7 @@
 package org.rcsb.cif.text;
 
 import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.Column;
@@ -25,7 +25,7 @@ public class TextCifWriter {
     public byte[] write(CifFile cifFile) {
         StringBuilder output = new StringBuilder();
 
-        for (Block block : cifFile.getBlocks()) {
+        for (CifBlock block : cifFile.getBlocks()) {
             String blockHeader = block.getBlockHeader();
             String header = blockHeader != null ? blockHeader.replaceAll("[ \n\t]", "").toUpperCase() : "UNKNOWN";
             output.append("data_")

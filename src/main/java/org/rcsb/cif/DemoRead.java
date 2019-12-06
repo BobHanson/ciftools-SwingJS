@@ -13,7 +13,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import org.rcsb.cif.model.BaseColumn;
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.generated.AtomSite;
@@ -237,7 +237,7 @@ public class DemoRead {
 		boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 		String type = (parseBinary ? "binary " : "text ");
 		long t0 = System.nanoTime();
-		Block data = cifFile.getFirstBlock();
+		CifBlock data = cifFile.getFirstBlock();
 
 		// get category with name '_atom_site' from first block - access is type-safe,
 		// all categories

@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.generic.Platform;
 
 public class BaseCategory implements Category {
     private final String name;
@@ -58,7 +59,7 @@ public class BaseCategory implements Category {
 
         this.isText = false;
         this.encodedColumns = encodedColumns;
-        this.decodedColumns = new LinkedHashMap<>();
+        this.decodedColumns = (Map<String, Column>) Platform.getMap();
         try {
             this.columnNamesEncoded = new ArrayList<String>();
             this.columnNamesLC = new ArrayList<String>();

@@ -3,9 +3,10 @@ package org.rcsb.cif.binary;
 import org.rcsb.cif.CifOptions;
 import org.rcsb.cif.ParsingException;
 import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.generic.Platform;
 import org.rcsb.cif.model.BaseBlock;
 import org.rcsb.cif.model.BinaryFile;
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.ModelFactory;
@@ -48,11 +49,11 @@ public class BinaryCifReader {
 
         String encoder = Codec.getStringFromBytes((byte[]) unpacked.get("encoder"));
 
-        List<Block> dataBlocks = Stream.of((Object[]) (unpacked.get("dataBlocks")))
+        List<CifBlock> dataBlocks = Stream.of((Object[]) (unpacked.get("dataBlocks")))
                 .map(entry -> {
                     Map<String, Object> map = (Map<String, Object>) entry;
                     String header = Codec.getStringFromBytes((byte[]) map.get("header"));
-                    Map<String, Category> categories = new LinkedHashMap<>();
+                    Map<String, Category> categories = (Map<String, Category>) Platform.getMap();
 
                     try {
                         for (Object o : (Object[]) map.get("categories")) {

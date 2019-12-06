@@ -1,5 +1,10 @@
 package org.rcsb.cif.model.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.rcsb.cif.generic.Platform;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.Column;
@@ -9,18 +14,12 @@ import org.rcsb.cif.model.ModelFactory;
 import org.rcsb.cif.model.StrColumn;
 import org.rcsb.cif.model.ValueKind;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
-
 /**
- * Builds a category in a {@link org.rcsb.cif.model.Block}.
+ * Builds a category in a {@link org.rcsb.cif.model.CifBlock}.
  */
 public class CategoryBuilder {
     private final String categoryName;
-    private final LinkedHashMap<String, Column> columns;
+    private final Map<String, Column> columns;
     private final BlockBuilder parent;
     private final List<ColumnBuilder<?>> pendingDigests;
     private final List<ColumnBuilder<?>> finishedDigests;
@@ -33,7 +32,7 @@ public class CategoryBuilder {
      */
     public CategoryBuilder(String categoryName, BlockBuilder parent) {
         this.categoryName = categoryName;
-        this.columns = new LinkedHashMap<>();
+        this.columns = (Map<String, Column>) Platform.getMap();
         this.parent = parent;
         this.pendingDigests = new ArrayList<>();
         this.finishedDigests = new ArrayList<>();
@@ -51,7 +50,7 @@ public class CategoryBuilder {
      * Associated columns.
      * @return the column map
      */
-    LinkedHashMap<String, Column> getColumns() {
+    Map<String, Column> getColumns() {
         return columns;
     }
 

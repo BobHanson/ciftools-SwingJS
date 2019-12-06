@@ -13,7 +13,7 @@ import org.rcsb.cif.binary.encoding.ByteArrayEncoding;
 import org.rcsb.cif.binary.encoding.FixedPointEncoding;
 import org.rcsb.cif.binary.encoding.RunLengthEncoding;
 import org.rcsb.cif.binary.encoding.StringArrayEncoding;
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.Column;
@@ -51,7 +51,7 @@ public class BinaryCifWriter {
         int blockCount = 0;
         file.put("dataBlocks", blocks);
 
-        for (Block cifBlock : cifFile.getBlocks()) {
+        for (CifBlock cifBlock : cifFile.getBlocks()) {
             Map<String, Object> block = new LinkedHashMap<>();
             String blockHeader = cifBlock.getBlockHeader();
             String header = blockHeader != null ? blockHeader.replaceAll("[ \n\t]", "").toUpperCase() : "UNKNOWN";

@@ -50,15 +50,15 @@ public class FixedPointCodec {
 		// BH note: this next escape of the Functional code 
 		// produced a 25-fold speed increase in SwingJS
 		// no difference in Java; 
-		if (/** @j2sNative true ||*/false) {
-			// JavaScript only
+//		if (/** @j2sNative true ||*/false) {
+//			// JavaScript only
 			outputArray = new double[input.length];
 			for (int i = input.length; --i >= 0;)
 				outputArray[i] = f * input[i];
-		} else {
-			// Java only
-			outputArray = IntStream.of(input).mapToDouble(i -> f * i).toArray();
-		}
+//		} else {
+//			// Java only
+//			outputArray = IntStream.of(input).mapToDouble(i -> f * i).toArray();
+//		}
 		return srcType == 32 ? EncodedDataFactory.float32Array(outputArray, data.getEncoding())
 				: EncodedDataFactory.float64Array(outputArray, data.getEncoding());
 	}

@@ -1,4 +1,4 @@
-package org.rcsb.cif.model;
+package org.rcsb.cif.generic;
 
 import java.util.List;
 import java.util.stream.Stream;

@@ -1,6 +1,6 @@
 package org.rcsb.cif;
 
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.builder.CifBuilder;
@@ -35,7 +35,7 @@ public class Demo {
         }
 
         // get first block of CIF
-        Block data = cifFile.getFirstBlock();
+        CifBlock data = cifFile.getFirstBlock();
 
         // get category with name '_atom_site' from first block - access is type-safe, all categories
         // are inferred from the CIF schema

@@ -1,6 +1,8 @@
-package org.rcsb.cif.model;
+package org.rcsb.cif.generic;
 
 import java.util.List;
+
+import org.rcsb.cif.model.CifFile;
 
 public class BinaryFileGeneric implements CifFileGeneric {
 

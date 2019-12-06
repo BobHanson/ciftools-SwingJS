@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
@@ -14,7 +13,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.rcsb.cif.binary.codec.Codec;
-import org.rcsb.cif.model.properties.CreateProperties;
 
 /**
  * The factory for model instances for cases when they are somewhat difficult or ambiguously to obtain.
@@ -163,15 +161,15 @@ public class ModelFactory {
 
 	}
 
-    @SuppressWarnings("unchecked")
-    private static Class<? extends BaseCategory> forCategoryName(String categoryName) {
-        try {
-            return (Class<? extends BaseCategory>) Class.forName(categoryName);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("could not acquire category class with name: " + categoryName, e);
-        }
-    }
-
+//    @SuppressWarnings("unchecked")
+//    private static Class<? extends BaseCategory> forCategoryName(String categoryName) {
+//        try {
+//            return (Class<? extends BaseCategory>) Class.forName(categoryName);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException("could not acquire category class with name: " + categoryName, e);
+//        }
+//    }
+//
     private static Class<? extends BaseColumn> forColumnName(String columnName) {
         switch (columnName) {
             case "FloatColumn":
@@ -281,10 +279,7 @@ public class ModelFactory {
                                           String data,
                                           int[] startToken,
                                           int[] endToken) {
-        // if we cannot rely on schema, we could parse/digest data until we can make an elaborate guess about the type -
-        // however this would be really slow - so everyone is a String now
         Class<? extends BaseColumn> columnClass = COLUMN_MAP.get(categoryName + "." + columnName);
- 
         return createColumnText(categoryName, columnName, data, startToken, endToken, columnClass == null ? StrColumn.class : columnClass);
     }
 

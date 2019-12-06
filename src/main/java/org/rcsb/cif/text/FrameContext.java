@@ -1,15 +1,16 @@
 package org.rcsb.cif.text;
 
-import org.rcsb.cif.model.Category;
-
-import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.rcsb.cif.generic.Platform;
+import org.rcsb.cif.model.Category;
 
 class FrameContext {
     private final Map<String, Category> categories;
 
-    FrameContext() {
-        this.categories = new LinkedHashMap<>();
+    @SuppressWarnings("unchecked")
+	FrameContext() {
+        this.categories = (Map<String, Category>) Platform.getMap();
     }
 
     Map<String, Category> getCategories() {

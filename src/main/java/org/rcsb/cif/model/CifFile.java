@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 /**
  * <p>The instance of a parsed CifFile. No difference between binary and text files is exposed. This class does not
- * represent a parsed data model. Rather all source data is neatly wrapped into a type-safe hierarchy of {@link Block},
+ * represent a parsed data model. Rather all source data is neatly wrapped into a type-safe hierarchy of {@link CifBlock},
  * {@link Category}, and {@link Column} entities. Parsing (for text data) or decoding (for binary data) is only done,
  * when the content of particular categories or columns is requested. Otherwise the goal is to keep interaction with the
  * source data to a bare minimum: just enough to provide this view of the data model.</p>
@@ -28,13 +28,13 @@ public interface CifFile {
      * Access to all blocks of this file.
      * @return a list of present blocks
      */
-    List<Block> getBlocks();
+    List<CifBlock> getBlocks();
 
     /**
      * Convenience method to access the first block.
      * @return the first block of this file
      */
-    default Block getFirstBlock() {
+    default CifBlock getFirstBlock() {
         return getBlocks().get(0);
     }
 
@@ -42,7 +42,7 @@ public interface CifFile {
      * Convenience method to access all blocks as Stream.
      * @return a Stream of all blocks
      */
-    default Stream<Block> blocks() {
+    default Stream<CifBlock> blocks() {
         return getBlocks().stream();
     }
 }

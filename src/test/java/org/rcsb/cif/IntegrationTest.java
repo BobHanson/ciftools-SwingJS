@@ -1,7 +1,7 @@
 package org.rcsb.cif;
 
 import org.junit.Test;
-import org.rcsb.cif.model.Block;
+import org.rcsb.cif.model.CifBlock;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.FloatColumn;
@@ -97,7 +97,7 @@ public class IntegrationTest {
     }
 
     private void testUndefinedColumnBehavior(CifFile cifFile) {
-        Block block = cifFile.getFirstBlock();
+        CifBlock block = cifFile.getFirstBlock();
         assertNotNull("header is corrupted", block.getBlockHeader());
 
         assertTrue(block.getEntry().isDefined());

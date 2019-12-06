@@ -12,6 +12,8 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.rcsb.cif.generic.Platform;
+
 /**
  * Decodes and encodes MessagePack data. Exists isolated from other codec implementations for simplicity and due to
  * subtle differences such as byte order in MessagePack being big-endian as opposed to binary CIF codecs which require
@@ -350,19 +352,10 @@ public class MessagePackCodec {
      * @return
      * @throws IOException
      */
-    private Map<String, Object> map(DataInputStream inputStream, int length) throws IOException {
+    @SuppressWarnings("unchecked")
+	private Map<String, Object> map(DataInputStream inputStream, int length) throws IOException {
     	// BH SwingJS 10% improvement in decoding speed for 3j9m
-    	Map<String, Object> value = null;
-    	/**
-    	 * @j2sNative
-    	 * 
-    	 * Clazz.load("java.util.JSHashMap");
-    	 *   value = new java.util.JSHashMap();
-    	 * 
-    	 */
-    	{
-    		 value= new LinkedHashMap<>();
-    	}
+    	Map<String, Object> value = (Map<String, Object>) Platform.getMap();
         for (int i = 0; i < length; i++) {
             value.put((String) decodeInternal(inputStream, true), decodeInternal(inputStream, false));
         }

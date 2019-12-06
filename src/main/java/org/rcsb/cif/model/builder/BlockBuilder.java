@@ -1,12 +1,13 @@
 package org.rcsb.cif.model.builder;
 
-import org.rcsb.cif.model.ModelFactory;
-import org.rcsb.cif.model.BaseBlock;
-import org.rcsb.cif.model.Block;
-import org.rcsb.cif.model.Category;
-import org.rcsb.cif.model.CifFile;
+import java.util.Map;
 
-import java.util.LinkedHashMap;
+import org.rcsb.cif.generic.Platform;
+import org.rcsb.cif.model.BaseBlock;
+import org.rcsb.cif.model.Category;
+import org.rcsb.cif.model.CifBlock;
+import org.rcsb.cif.model.CifFile;
+import org.rcsb.cif.model.ModelFactory;
 
 /**
  * Builds a block in a {@link org.rcsb.cif.model.CifFile}, in most cases there is 1 block which contains all categories
@@ -14,7 +15,7 @@ import java.util.LinkedHashMap;
  */
 public class BlockBuilder {
     private final String blockName;
-    private final LinkedHashMap<String, Category> categories;
+    private final Map<String, Category> categories;
     private final CifBuilder parent;
 
     /**
@@ -25,7 +26,7 @@ public class BlockBuilder {
      */
     public BlockBuilder(String blockName, CifBuilder parent) {
         this.blockName = blockName;
-        this.categories = new LinkedHashMap<>();
+        this.categories = (Map<String, Category>) Platform.getMap();
         this.parent = parent;
     }
 
@@ -41,7 +42,7 @@ public class BlockBuilder {
      * Associated categories.
      * @return the category map
      */
-    LinkedHashMap<String, Category> getCategories() {
+    Map<String, Category> getCategories() {
         return categories;
     }
 
@@ -78,11 +79,11 @@ public class BlockBuilder {
     }
 
     /**
-     * Process all stored information and release a {@link Block} instance. Use {@link BlockBuilder#leaveBlock()} if you
+     * Process all stored information and release a {@link CifBlock} instance. Use {@link BlockBuilder#leaveBlock()} if you
      * want to create a {@link CifFile} instance. Otherwise the block is aware of this parent (and vice versa).
      * @return the created Block
      */
-    public Block build() {
+    public CifBlock build() {
         return new BaseBlock(categories, "unknown");
     }
 

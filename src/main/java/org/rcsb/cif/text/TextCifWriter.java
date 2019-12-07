@@ -63,7 +63,7 @@ public class TextCifWriter {
         output.append("\n");
 
         try {
-			return output.toString().getBytes("UTF_8");
+			return output.toString().getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			return null;
 		}

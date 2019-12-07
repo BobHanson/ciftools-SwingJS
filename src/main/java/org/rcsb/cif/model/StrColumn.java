@@ -21,12 +21,30 @@ public class StrColumn extends BaseColumn {
         super(name, rowCount, mask);
         type = COLUMN_TYPE_STRING;
         String[] tmpData;
-        try {
+        if (data instanceof String[]) {
             tmpData = (String[]) data;
-        } catch (ClassCastException e) {
-            // try to recover when data was parsed to greedily (e.g. 1,2,3 interpreted as int, even though the field should really be String)
-            tmpData = data instanceof int[] ? IntStream.of((int[]) data).mapToObj(String::valueOf).toArray(String[]::new) :
-                    DoubleStream.of((double[]) data).mapToObj(String::valueOf).toArray(String[]::new);
+        } else {
+        	// binaryCIF writing may have misassigned the data type
+        	// example: pdbx_nonpoly_ndb_seq_num, which should be String, but was found to be 
+        	// coded as int[]
+        	tmpData = new String[rowCount];
+        	if (data instanceof int[]) {
+        		for (int i = rowCount; --i >= 0;)
+        			tmpData[i] = (hasMask && mask[i] != PRESENT ? STR_PRESENCE[mask[i]] : "" + ((int[]) data)[i]);
+        	} else {
+        		for (int i = rowCount; --i >= 0;)
+        			tmpData[i] = (hasMask && mask[i] != PRESENT ? STR_PRESENCE[mask[i]] : "" + ((double[]) data)[i]);
+
+        	}
+        	// note that casting with (String[]) fails in Java but not in JavaScript        	
+            try {
+//                tmpData = (String[]) data;
+            } catch (ClassCastException e) {
+//                // try to recover when data was parsed to greedily (e.g. 1,2,3 interpreted as int, even though the field should really be String)
+//                tmpData = data instanceof int[] ? IntStream.of((int[]) data).mapToObj(String::valueOf).toArray(String[]::new) :
+//                        DoubleStream.of((double[]) data).mapToObj(String::valueOf).toArray(String[]::new);
+            }
+
         }
         this.binaryData = tmpData;
     }

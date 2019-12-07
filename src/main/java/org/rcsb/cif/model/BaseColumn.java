@@ -10,6 +10,12 @@ public abstract class BaseColumn implements Column {
 	public final static int COLUMN_TYPE_FLOAT = 1;
 	public final static int COLUMN_TYPE_STRING = 2;
 
+	
+	public final static String[] STR_PRESENCE = new String[] {null, ".", "?"};
+	public final static int PRESENT = 0;
+	public final static int NOT_PRESENT = 1;
+	public final static int UNKNOWN = 2;
+	
 	protected int type = COLUMN_TYPE_STRING;
 	
 	private final String name;

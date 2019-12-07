@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.rcsb.cif.CifOptions;
 import org.rcsb.cif.ParsingException;
 import org.rcsb.cif.generic.BaseBlockGeneric;
-import org.rcsb.cif.generic.BlockGeneric;
+import org.rcsb.cif.generic.CifBlockGeneric;
 import org.rcsb.cif.model.BaseBlock;
 import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Category;

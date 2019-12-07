@@ -55,7 +55,7 @@ public class BinaryCifReaderGeneric {
 
         String encoder = Codec.getStringFromBytes((byte[]) unpacked.get("encoder"));
 
-        List<BlockGeneric> dataBlocks = Stream.of((Object[]) (unpacked.get("dataBlocks")))
+        List<CifBlockGeneric> dataBlocks = Stream.of((Object[]) (unpacked.get("dataBlocks")))
                 .map(entry -> {
                     Map<String, Object> map = (Map<String, Object>) entry;
                     String header = Codec.getStringFromBytes((byte[]) map.get("header"));

@@ -6,18 +6,18 @@ import org.rcsb.cif.model.CifFile;
 
 public class BinaryFileGeneric implements CifFileGeneric {
 
-    private final List<BlockGeneric> blocks;
+    private final List<CifBlockGeneric> blocks;
     private final String version;
     private final String encoder;
 
-    public BinaryFileGeneric(List<BlockGeneric> blocks, String version, String encoder) {
+    public BinaryFileGeneric(List<CifBlockGeneric> blocks, String version, String encoder) {
         this.blocks = blocks;
         this.version = version;
         this.encoder = encoder;
     }
     
 	@Override
-	public List<BlockGeneric> getBlocks() {
+	public List<CifBlockGeneric> getBlocks() {
 		return blocks;
 	}
 

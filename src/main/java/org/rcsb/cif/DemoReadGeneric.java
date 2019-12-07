@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.OptionalDouble;
 
-import org.rcsb.cif.generic.BlockGeneric;
+import org.rcsb.cif.generic.CifBlockGeneric;
 import org.rcsb.cif.generic.CifFileGeneric;
 import org.rcsb.cif.generic.CifIOGeneric;
 import org.rcsb.cif.model.Category;
@@ -297,7 +297,7 @@ public class DemoReadGeneric {
 		boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 		String type = (parseBinary ? "binary " : "text ");
 		long t0 = System.nanoTime(), t1 = 0;
-		BlockGeneric data = cifFile.getFirstBlock();
+		CifBlockGeneric data = cifFile.getFirstBlock();
 
 		// get category with name '_atom_site' from first block - access is type-safe,
 		// all categories

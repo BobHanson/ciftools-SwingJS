@@ -19,12 +19,27 @@ public class IntColumn extends BaseColumn {
     public IntColumn(String name, int rowCount, Object data, int[] mask) {
         super(name, rowCount, mask);
         int[] tmpData;
-        try {
+        if (data instanceof int[]) {
             tmpData = (int[]) data;
-        } catch (ClassCastException e) {
-            tmpData = data instanceof String[] ? Stream.of((String[]) data).mapToInt(this::parseInt).toArray() :
-                    DoubleStream.of((double[]) data).mapToInt(d -> (int) d).toArray();
+        } else {
+        	// binaryCIF writing may have misassigned the data type
+        	tmpData = new int[rowCount];
+        	if (data instanceof String[]) {
+        		
+        		for (int i = rowCount; --i >= 0;)
+        			tmpData[i] = (hasMask && mask[i] != PRESENT ? 0 : Integer.parseInt(((String[]) data)[i]));
+        	} else {
+        		for (int i = rowCount; --i >= 0;)
+        			tmpData[i] = (int) ((double[]) data)[i];
+        	}
         }
+        	// note that casting with (String[]) fails in Java but not in JavaScript      
+//        try {
+//            tmpData = (int[]) data;
+//        } catch (ClassCastException e) {
+//            tmpData = data instanceof String[] ? Stream.of((String[]) data).mapToInt(this::parseInt).toArray() :
+//                    DoubleStream.of((double[]) data).mapToInt(d -> (int) d).toArray();
+//        }
         this.binaryData = tmpData;
     }
 
@@ -89,9 +104,9 @@ public class IntColumn extends BaseColumn {
 				String val = getRawTextData(i);
 				switch (val) {
 				case ".":
-				case "":
 					a[i] = Integer.MIN_VALUE;
 					break;
+				case "":
 				case "?":
 					a[i] = Integer.MAX_VALUE;
 					break;
@@ -102,13 +117,13 @@ public class IntColumn extends BaseColumn {
 		} else {
 			for (int i = rowCount; --i >= 0;) {
 				switch (mask[i]) {
-				case 0: // present
+				case PRESENT:
 					a[i] = binaryData[i];
 					break;
-				case 1: // not present, .
+				case NOT_PRESENT: // .
 					a[i] = Integer.MIN_VALUE;
 					break;
-				case 2: // unknown ?
+				case UNKNOWN:     // ?
 					a[i] = Integer.MAX_VALUE;
 					break;
 				}

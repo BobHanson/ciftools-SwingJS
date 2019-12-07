@@ -50,8 +50,8 @@ public class TextCifReaderGeneric implements TextReader {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addBlock(Block block, List<?> dataBlocks, List<?> saveFrames) {
-		((List<BlockGeneric>)dataBlocks).add((BlockGeneric) block);
-		((BaseBlockGeneric)block).getSaveFrames().addAll((Collection<? extends BlockGeneric>) saveFrames);
+		((List<CifBlockGeneric>)dataBlocks).add((CifBlockGeneric) block);
+		((BaseBlockGeneric)block).getSaveFrames().addAll((Collection<? extends CifBlockGeneric>) saveFrames);
 	}
 	
     @Override

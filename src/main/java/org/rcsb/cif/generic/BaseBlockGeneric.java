@@ -15,10 +15,10 @@ import org.rcsb.cif.model.ModelFactory;
  * @author hansonr
  *
  */
-public class BaseBlockGeneric implements BlockGeneric {
+public class BaseBlockGeneric implements CifBlockGeneric {
 	
     protected final Map<String, Category> categories;
-    private final List<BlockGeneric> saveFrames;
+    private final List<CifBlockGeneric> saveFrames;
     protected final String header;
 
     public BaseBlockGeneric(Map<String, Category> categories, String header) {
@@ -28,7 +28,7 @@ public class BaseBlockGeneric implements BlockGeneric {
     @SuppressWarnings({ "unchecked" })
 	public BaseBlockGeneric(Map<String, Category> categories, String header, List<?> saveFrames) {
         this.categories = categories;
-        this.saveFrames =  (List<BlockGeneric>) saveFrames;
+        this.saveFrames =  (List<CifBlockGeneric>) saveFrames;
         this.header = header;
     }
 
@@ -38,7 +38,7 @@ public class BaseBlockGeneric implements BlockGeneric {
         return (BaseCategory) categories.computeIfAbsent(name, ModelFactory::createEmptyCategory);
     }
 
-    public List<BlockGeneric> getSaveFrames() {
+    public List<CifBlockGeneric> getSaveFrames() {
         return saveFrames;
     }
 
@@ -49,8 +49,7 @@ public class BaseBlockGeneric implements BlockGeneric {
 
 	@Override
 	public List<String> getCategoryNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<String>(categories.keySet());
 	}
 
 

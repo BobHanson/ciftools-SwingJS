@@ -4,8 +4,6 @@ import org.rcsb.cif.CifOptions;
 import org.rcsb.cif.ParsingException;
 import org.rcsb.cif.CifOptions.CifOptionsBuilder;
 import org.rcsb.cif.CifOptions.CifOptionsBuilder.FileFormat;
-import org.rcsb.cif.binary.BinaryCifReader;
-import org.rcsb.cif.binary.BinaryCifWriter;
 import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.text.TextCifReader;
 import org.rcsb.cif.text.TextCifWriter;
@@ -195,100 +193,100 @@ public class CifIOGeneric {
         return magicNumber;
     }
 
-//    /**
-//     * Write a binary {@link CifFile} to a given {@link Path}.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param outputFile the {@link Path} where the content should be written
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static void writeBinary(CifFileGeneric cifFile, Path outputFile) throws IOException {
-//        writeBinary(cifFile, outputFile, DEFAULT_OPTIONS);
-//    }
-//
-//    /**
-//     * Write a binary {@link CifFile} to a given {@link Path}.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param outputFile the {@link Path} where the content should be written
-//     * @param options {@link CifOptions} for the writing process
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static void writeBinary(CifFileGeneric cifFile, Path outputFile, CifOptions options) throws IOException {
-//        Files.write(outputFile, writeBinary(cifFile, options));
-//    }
-//
-//    /**
-//     * Convert a {@link CifFile} to its binary <code>byte[]</code> representation.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @return a <code>byte[]</code> representing the information to write
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static byte[] writeBinary(CifFileGeneric cifFile) throws IOException {
-//        return writeBinary(cifFile, DEFAULT_OPTIONS);
-//    }
-//
-//    /**
-//     * Convert a {@link CifFile} to its binary <code>byte[]</code> representation.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param options {@link CifOptions} for the writing process
-//     * @return a <code>byte[]</code> representing the information to write
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static byte[] writeBinary(CifFileGeneric cifFile, CifOptions options) throws IOException {
-//        byte[] raw = new BinaryCifWriter(options).write(cifFile);
-//        return options.isGzip() ? compress(raw) : raw;
-//    }
-//
-//    /**
-//     * Write a text {@link CifFile} to a given {@link Path}.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param outputFile the {@link Path} where the content should be written
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static void writeText(CifFileGeneric cifFile, Path outputFile) throws IOException {
-//        writeText(cifFile, outputFile, DEFAULT_OPTIONS);
-//    }
-//
-//    /**
-//     * Write a text {@link CifFile} to a given {@link Path}.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param outputFile the {@link Path} where the content should be written
-//     * @param options {@link CifOptions} for the writing process
-//     * @throws IOException thrown when writing fails
-//     */
-//    public static void writeText(CifFileGeneric cifFile, Path outputFile, CifOptions options) throws IOException {
-//        Files.write(outputFile, writeText(cifFile, options));
-//    }
-//
-//    /**
-//     * Convert a {@link CifFile} to its text <code>byte[]</code> representation.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @return a <code>byte[]</code> representing the information to write
-//     * @throws IOException thrown when conversion fails
-//     */
-//    public static byte[] writeText(CifFileGeneric cifFile) throws IOException {
-//        return writeText(cifFile, DEFAULT_OPTIONS);
-//    }
-//
-//    /**
-//     * Convert a {@link CifFile} to its text <code>byte[]</code> representation.
-//     * @param CifFileGeneric the {@link CifFile} to process
-//     * @param options {@link CifOptions} for the writing process
-//     * @return a <code>byte[]</code> representing the information to write
-//     * @throws IOException thrown when conversion fails
-//     */
-//    public static byte[] writeText(CifFileGeneric cifFile, CifOptions options) throws IOException {
-//        byte[] raw = new TextCifWriter(options).write(cifFile);
-//        return options.isGzip() ? compress(raw) : raw;
-//    }
-//
-//    private static byte[] compress(byte[] bytes) throws IOException {
-//        byte[] output;
-//        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream(bytes.length)) {
-//            try (GZIPOutputStream zipStream = new GZIPOutputStream(byteStream)) {
-//                zipStream.write(bytes);
-//            }
-//            output = byteStream.toByteArray();
-//        }
-//        return output;
-//    }
+    /**
+     * Write a binary {@link CifFile} to a given {@link Path}.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param outputFile the {@link Path} where the content should be written
+     * @throws IOException thrown when writing fails
+     */
+    public static void writeBinary(CifFileGeneric cifFile, Path outputFile) throws IOException {
+        writeBinary(cifFile, outputFile, DEFAULT_OPTIONS);
+    }
+
+    /**
+     * Write a binary {@link CifFile} to a given {@link Path}.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param outputFile the {@link Path} where the content should be written
+     * @param options {@link CifOptions} for the writing process
+     * @throws IOException thrown when writing fails
+     */
+    public static void writeBinary(CifFileGeneric cifFile, Path outputFile, CifOptions options) throws IOException {
+        Files.write(outputFile, writeBinary(cifFile, options));
+    }
+
+    /**
+     * Convert a {@link CifFile} to its binary <code>byte[]</code> representation.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @return a <code>byte[]</code> representing the information to write
+     * @throws IOException thrown when writing fails
+     */
+    public static byte[] writeBinary(CifFileGeneric cifFile) throws IOException {
+        return writeBinary(cifFile, DEFAULT_OPTIONS);
+    }
+
+    /**
+     * Convert a {@link CifFile} to its binary <code>byte[]</code> representation.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param options {@link CifOptions} for the writing process
+     * @return a <code>byte[]</code> representing the information to write
+     * @throws IOException thrown when writing fails
+     */
+    public static byte[] writeBinary(CifFileGeneric cifFile, CifOptions options) throws IOException {
+        byte[] raw = new BinaryCifWriterGeneric(options).write(cifFile);
+        return options.isGzip() ? compress(raw) : raw;
+    }
+
+    /**
+     * Write a text {@link CifFile} to a given {@link Path}.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param outputFile the {@link Path} where the content should be written
+     * @throws IOException thrown when writing fails
+     */
+    public static void writeText(CifFileGeneric cifFile, Path outputFile) throws IOException {
+        writeText(cifFile, outputFile, DEFAULT_OPTIONS);
+    }
+
+    /**
+     * Write a text {@link CifFile} to a given {@link Path}.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param outputFile the {@link Path} where the content should be written
+     * @param options {@link CifOptions} for the writing process
+     * @throws IOException thrown when writing fails
+     */
+    public static void writeText(CifFileGeneric cifFile, Path outputFile, CifOptions options) throws IOException {
+        Files.write(outputFile, writeText(cifFile, options));
+    }
+
+    /**
+     * Convert a {@link CifFile} to its text <code>byte[]</code> representation.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @return a <code>byte[]</code> representing the information to write
+     * @throws IOException thrown when conversion fails
+     */
+    public static byte[] writeText(CifFileGeneric cifFile) throws IOException {
+        return writeText(cifFile, DEFAULT_OPTIONS);
+    }
+
+    /**
+     * Convert a {@link CifFile} to its text <code>byte[]</code> representation.
+     * @param CifFileGeneric the {@link CifFile} to process
+     * @param options {@link CifOptions} for the writing process
+     * @return a <code>byte[]</code> representing the information to write
+     * @throws IOException thrown when conversion fails
+     */
+    public static byte[] writeText(CifFileGeneric cifFile, CifOptions options) throws IOException {
+        byte[] raw = new TextCifWriterGeneric(options).write(cifFile);
+        return options.isGzip() ? compress(raw) : raw;
+    }
+
+    private static byte[] compress(byte[] bytes) throws IOException {
+        byte[] output;
+        try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream(bytes.length)) {
+            try (GZIPOutputStream zipStream = new GZIPOutputStream(byteStream)) {
+                zipStream.write(bytes);
+            }
+            output = byteStream.toByteArray();
+        }
+        return output;
+    }
 }

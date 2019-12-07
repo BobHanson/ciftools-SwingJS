@@ -1,7 +1,10 @@
 package org.rcsb.cif.generator;
 
-import org.rcsb.cif.CifIO;
 import org.rcsb.cif.model.*;
+import org.rcsb.cif.api.BaseBlock;
+import org.rcsb.cif.api.CifBlock;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +29,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("ALL")
 class SchemaGenerator {
     private static final Path OUTPUT_PATH = Paths.get("/Users/sebastian/model/");
-    private static final String BASE_PACKAGE = "org.rcsb.cif.model";
+    private static final String BASE_PACKAGE = "org.rcsb.cif.api";
     private static final String GENERATED_PACKAGE = BASE_PACKAGE + ".generated";
 
     public static void main(String[] args) throws IOException {

@@ -13,11 +13,18 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import org.rcsb.cif.model.BaseColumn;
-import org.rcsb.cif.model.CifBlock;
-import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.FloatColumn;
-import org.rcsb.cif.model.generated.AtomSite;
+import org.rcsb.cif.api.CifBlock;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
+import org.rcsb.cif.api.generated.AtomSite;
 
+/**
+ * Test reading using the original api generated methods.
+ * 
+ * @author hansonr
+ *
+ */
 public class DemoRead {
 
 	/**

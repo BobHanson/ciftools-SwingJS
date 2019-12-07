@@ -12,9 +12,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.OptionalDouble;
 
-import org.rcsb.cif.generic.CifBlockGeneric;
-import org.rcsb.cif.generic.CifFileGeneric;
-import org.rcsb.cif.generic.CifIOGeneric;
+import org.rcsb.cif.generic.CifBlock;
+import org.rcsb.cif.generic.CifFile;
+import org.rcsb.cif.generic.CifIO;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.FloatColumn;
 
@@ -172,7 +172,7 @@ public class DemoWriteGeneric {
 			long t0 = System.nanoTime(), t1;
 
 			inputStream.reset();
-			CifFileGeneric cifFile = CifIOGeneric.readFromInputStream(inputStream);
+			CifFile cifFile = CifIO.readFromInputStream(inputStream);
 			if (!silent)
 				t0 = reportTime(t0,
 						"parseStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName());
@@ -206,7 +206,7 @@ public class DemoWriteGeneric {
 			boolean silent = ((mode & MODE_SILENT) == MODE_SILENT);
 			boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 			long t0 = System.nanoTime();
-			CifFileGeneric cifFile = CifIOGeneric.readFromURL(getURL(pdbId, parseBinary));
+			CifFile cifFile = CifIO.readFromURL(getURL(pdbId, parseBinary));
 			if (!silent)
 				t0 = reportTime(t0, "parseStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName());
 				process(pdbId, cifFile, mode);
@@ -218,15 +218,15 @@ public class DemoWriteGeneric {
 		}
 	}
 
-	protected static void process(String pdbId, CifFileGeneric cifFile, int mode) {
+	protected static void process(String pdbId, CifFile cifFile, int mode) {
 		boolean isBinary = ((mode & MODE_WRITE_PARSE_BINARY) == MODE_WRITE_PARSE_BINARY);
 		try {
 			Path path = new File("test-write." + pdbId + (isBinary ? ".bcif" : ".cif")).toPath();
 			System.out.println("Write process " + path);
 			if (isBinary) {
-				CifIOGeneric.writeBinary(cifFile, path);
+				CifIO.writeBinary(cifFile, path);
 			} else {
-				CifIOGeneric.writeText(cifFile, path);
+				CifIO.writeText(cifFile, path);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

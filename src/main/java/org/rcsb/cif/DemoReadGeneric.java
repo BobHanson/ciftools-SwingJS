@@ -11,9 +11,9 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.OptionalDouble;
 
-import org.rcsb.cif.generic.CifBlockGeneric;
-import org.rcsb.cif.generic.CifFileGeneric;
-import org.rcsb.cif.generic.CifIOGeneric;
+import org.rcsb.cif.generic.CifBlock;
+import org.rcsb.cif.generic.CifFile;
+import org.rcsb.cif.generic.CifIO;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.FloatColumn;
 
@@ -235,7 +235,7 @@ public class DemoReadGeneric {
 			long t0 = System.nanoTime(), t1;
 
 			inputStream.reset();
-			CifFileGeneric cifFile = CifIOGeneric.readFromInputStream(inputStream);
+			CifFile cifFile = CifIO.readFromInputStream(inputStream);
 			if (!silent)
 				t0 = reportTime(t0, "parseStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName());
 			if (getAllData) {
@@ -273,7 +273,7 @@ public class DemoReadGeneric {
 			boolean getAllData = ((mode & MODE_OPTION_GET_ALL_DATA) == MODE_OPTION_GET_ALL_DATA);
 			boolean process = ((mode & MODE_OPTION_PROCESS) == MODE_OPTION_PROCESS);
 			long t0 = System.nanoTime();
-			CifFileGeneric cifFile = CifIOGeneric.readFromURL(getURL(pdbId, parseBinary));
+			CifFile cifFile = CifIO.readFromURL(getURL(pdbId, parseBinary));
 			if (!silent)
 				t0 = reportTime(t0, "parseStream " + (parseBinary ? "BINARY " : "TEXT ") + this.getClass().getSimpleName());
 			if (getAllData) {
@@ -291,13 +291,13 @@ public class DemoReadGeneric {
 		}
 	}
 
-	protected static void process(CifFileGeneric cifFile, int mode) {
+	protected static void process(CifFile cifFile, int mode) {
 		// get first block of CIF
 		boolean silent = ((mode & MODE_SILENT) == MODE_SILENT);
 		boolean parseBinary = ((mode & MODE_READ_PARSE_BINARY) == MODE_READ_PARSE_BINARY);
 		String type = (parseBinary ? "binary " : "text ");
 		long t0 = System.nanoTime(), t1 = 0;
-		CifBlockGeneric data = cifFile.getFirstBlock();
+		CifBlock data = cifFile.getFirstBlock();
 
 		// get category with name '_atom_site' from first block - access is type-safe,
 		// all categories

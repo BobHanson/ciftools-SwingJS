@@ -1,6 +1,7 @@
 package org.rcsb.cif;
 
 import org.junit.Test;
+import org.rcsb.cif.api.CifIO;
 import org.rcsb.cif.binary.codec.MessagePackCodec;
 
 import java.io.ByteArrayInputStream;

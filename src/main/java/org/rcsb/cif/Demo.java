@@ -1,10 +1,11 @@
 package org.rcsb.cif;
 
-import org.rcsb.cif.model.CifBlock;
-import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.FloatColumn;
-import org.rcsb.cif.model.builder.CifBuilder;
-import org.rcsb.cif.model.generated.AtomSite;
+import org.rcsb.cif.api.CifBlock;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
+import org.rcsb.cif.api.builder.CifBuilder;
+import org.rcsb.cif.api.generated.AtomSite;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,7 +17,7 @@ public class Demo {
     public static void main(String[] args) throws IOException {
         parseFile();
         System.out.println();
- //       buildModel();
+        buildModel();
     }
 
     private static void parseFile() throws IOException {

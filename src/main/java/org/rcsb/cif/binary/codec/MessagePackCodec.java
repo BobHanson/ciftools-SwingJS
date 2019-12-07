@@ -12,7 +12,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.rcsb.cif.generic.Platform;
+import org.rcsb.cif.Platform;
 
 /**
  * Decodes and encodes MessagePack data. Exists isolated from other codec implementations for simplicity and due to

@@ -1,7 +1,7 @@
 data_1ACJ
 #
 _coordinate_server_result.query_type      full 
-_coordinate_server_result.datetime_utc    '2019-12-07 07:16:45' 
+_coordinate_server_result.datetime_utc    '2019-12-07 23:44:04' 
 _coordinate_server_result.is_empty        no 
 _coordinate_server_result.has_error       no 
 _coordinate_server_result.api_version     1.4.10 
@@ -5510,10 +5510,10 @@ HETATM 4190 O O . HOH C 3 . . 19.551 31.826 68.006 1.00 39.5 ? O HOH A 680 1
 HETATM 4191 O O . HOH C 3 . . 23.095 67.354 48.33 1.00 12.96 ? O HOH A 681 1 
 HETATM 4192 O O . HOH C 3 . . -13.326 47.816 47.354 1.00 46.29 ? O HOH A 682 1 
 #
-_coordinate_server_stats.molecule_cached    yes 
-_coordinate_server_stats.io_time_ms         0 
-_coordinate_server_stats.parse_time_ms      0 
+_coordinate_server_stats.molecule_cached    no 
+_coordinate_server_stats.io_time_ms         3 
+_coordinate_server_stats.parse_time_ms      12 
 _coordinate_server_stats.query_time_ms      0 
-_coordinate_server_stats.format_time_ms     17 
+_coordinate_server_stats.format_time_ms     12 
 #
 

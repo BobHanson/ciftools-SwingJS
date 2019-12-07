@@ -7,12 +7,18 @@ import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.Column;
 
+/**
+ * Return methods from TokenizerState to the reader.
+ * 
+ * @author hansonr
+ *
+ */
 public interface TextReader {
 
-	Block createBlock(Map<String, Category> categories, String header);
+	public Block createBlock(Map<String, Category> categories, String header);
 
-	void addBlock(Block block, List<?> dataBlocks, List<?> saveFrames);
+	public void addBlock(Block block, List<?> dataBlocks, List<?> saveFrames);
 	
-	Category createCategory(String categoryName, Map<String, Column> columns);
+	public Category createCategory(String categoryName, Map<String, Column> columns);
 
 }

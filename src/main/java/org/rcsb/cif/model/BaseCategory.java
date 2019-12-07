@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.rcsb.cif.Platform;
 import org.rcsb.cif.binary.codec.Codec;
-import org.rcsb.cif.generic.Platform;
 
 public class BaseCategory implements Category {
     private final String name;
@@ -88,12 +88,12 @@ public class BaseCategory implements Category {
 
     @Override
     public Column getColumn(String name) {
-    	name = name.toLowerCase();
-        return isText ? getTextColumn(name) : getBinaryColumn(name);
+        return isText ? getTextColumn(name) : getBinaryColumn(name.toLowerCase());
     }
 
     private Column getTextColumn(String name) {
-        return textFields.computeIfAbsent(name, n -> ModelFactory.createEmptyColumn(this.name, n));
+    	Column c = textFields.get(name.toLowerCase());
+    	return (c == null ? textFields.computeIfAbsent(name, n -> ModelFactory.createEmptyColumn(this.name, n)) : c);
     }
 
     protected Column getBinaryColumn(String name) {
@@ -163,6 +163,36 @@ public class BaseCategory implements Category {
 		} catch(Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public FloatColumn getFloatColumn(String name) {
+		Column col = getColumn(name);
+		if (col == null)
+			throw new NullPointerException("no column with name " + name);
+		if (!(col instanceof FloatColumn))
+			throw new ClassCastException("type of column " + name + " is " + col.getClass().getSimpleName());
+		return (FloatColumn) col;
+	}
+
+	@Override
+	public IntColumn getIntColumn(String name) {
+		Column col = getColumn(name);
+		if (col == null)
+			throw new NullPointerException("no column with name " + name);
+		if (!(col instanceof IntColumn))
+			throw new ClassCastException("type of column " + name + " is " + col.getClass().getSimpleName());
+		return (IntColumn) col;
+	}
+
+	@Override
+	public StrColumn getStrColumn(String name) {
+		Column col = getColumn(name);
+		if (col == null)
+			throw new NullPointerException("no column with name " + name);
+		if (!(col instanceof StrColumn))
+			throw new ClassCastException("type of column " + name + " is " + col.getClass().getSimpleName());
+		return (StrColumn) col;
 	}
 
 }

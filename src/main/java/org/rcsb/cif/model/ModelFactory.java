@@ -104,7 +104,7 @@ public class ModelFactory {
 	 * 
 	 * 1) CIF key  atom_site
 	 * 
-	 * 2) class name  org.rcsb.cif.model.generated.AtomSite
+	 * 2) class name  org.rcsb.cif.api.generated.AtomSite
 	 * 
 	 * 3) column types and names for binaryCIF as [F,I,S]Name
 	 * 
@@ -115,7 +115,7 @@ public class ModelFactory {
 	 *    
 	 * meaning:
 	 * 
-	 *   symmetry_equiv maps to org.rcsb.cif.model.generated.SymmetryEquiv
+	 *   symmetry_equiv maps to org.rcsb.cif.api.generated.SymmetryEquiv
 	 * 
 	 *   symmetry_equiv.id is a StrColumn
 	 *   symmetry_equiv.pos_as_xyz is also a StrColumn
@@ -131,7 +131,7 @@ public class ModelFactory {
 //    	equiv=.SymmetryEquiv,Sid,Spos_as_xyz
     	int pt = catName.indexOf("_");
     	String primary = (pt < 0 ? catName : catName.substring(0, pt)).toLowerCase();
-    	String fname = "properties/" + primary + ".properties";
+    	String fname = "../generic/properties/" + primary + ".properties";
 		InputStream inputStream = ModelFactory.class.getResourceAsStream(fname);
         Objects.requireNonNull(inputStream, "could not load " + fname);
         BufferedReader lookupReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -143,7 +143,7 @@ public class ModelFactory {
 			String line = prop[1];
 			catName = primary + (name.equals("_") ? "" : "_" + name);
 			String[] info = line.split(",");
-			String className = (info[0].length() == 0 ? "" : "org.rcsb.cif.model.generated" + info[0]);
+			String className = (info[0].length() == 0 ? "" : "org.rcsb.cif.api.generated" + info[0]);
 			CATEGORY_NAME_MAP.put(catName, className);
 			if (!catName.toLowerCase().equals(catName))
 				CATEGORY_NAME_MAP.put(catName.toLowerCase(), className);

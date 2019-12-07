@@ -2,6 +2,8 @@ package org.rcsb.cif;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.rcsb.cif.api.CifIO;
 import org.rcsb.cif.binary.codec.Codec;
 
 import java.io.BufferedReader;

@@ -1,16 +1,17 @@
 package org.rcsb.cif;
 
 import org.junit.Test;
-import org.rcsb.cif.model.CifBlock;
-import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.StrColumn;
 import org.rcsb.cif.model.ValueKind;
-import org.rcsb.cif.model.builder.CifBuilder;
-import org.rcsb.cif.model.generated.AtomSite;
-import org.rcsb.cif.model.generated.AtomSites;
-import org.rcsb.cif.model.generated.Cell;
+import org.rcsb.cif.api.CifBlock;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
+import org.rcsb.cif.api.builder.CifBuilder;
+import org.rcsb.cif.api.generated.AtomSite;
+import org.rcsb.cif.api.generated.AtomSites;
+import org.rcsb.cif.api.generated.Cell;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -1,10 +1,11 @@
 package org.rcsb.cif;
 
 import org.junit.Test;
-import org.rcsb.cif.model.CifBlock;
-import org.rcsb.cif.model.CifFile;
 import org.rcsb.cif.model.IntColumn;
-import org.rcsb.cif.model.generated.AtomSite;
+import org.rcsb.cif.api.CifBlock;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
+import org.rcsb.cif.api.generated.AtomSite;
 
 import java.io.IOException;
 import java.io.InputStream;

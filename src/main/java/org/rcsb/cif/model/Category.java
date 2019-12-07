@@ -64,4 +64,11 @@ public interface Category {
 	List<String> getColumnNamesEncoded();
 
 	double[][] fillFloat(String... colNames);
+
+	FloatColumn getFloatColumn(String name);
+	
+	IntColumn getIntColumn(String name);
+
+	StrColumn getStrColumn(String name);
+
 }

@@ -2,10 +2,11 @@ package org.rcsb.cif;
 
 import org.junit.Test;
 import org.rcsb.cif.binary.codec.Codec;
-import org.rcsb.cif.model.BinaryFile;
-import org.rcsb.cif.model.CifFile;
-import org.rcsb.cif.model.TextFile;
-import org.rcsb.cif.model.generated.AtomSite;
+import org.rcsb.cif.api.BinaryFile;
+import org.rcsb.cif.api.CifFile;
+import org.rcsb.cif.api.CifIO;
+import org.rcsb.cif.api.TextFile;
+import org.rcsb.cif.api.generated.AtomSite;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

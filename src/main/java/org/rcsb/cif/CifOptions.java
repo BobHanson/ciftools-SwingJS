@@ -1,22 +1,18 @@
 package org.rcsb.cif;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.rcsb.cif.api.CifIO;
-import org.rcsb.cif.binary.codec.Codec;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.rcsb.cif.CifOptions.CifOptionsBuilder;
+
+//import com.google.gson.Gson;
+//import com.google.gson.reflect.TypeToken;
+
+import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.generic.CifIO;
 
 /**
  * <p>Allows to set options for CIF writing. Acquire by calling {@link CifOptions#builder()}. Pass into {@link CifIO}
@@ -284,37 +280,37 @@ public class CifOptions {
             return this;
         }
 
-        // Lazy initialization if no JSON is desired
-        static class GsonHolder {
-            static Gson instance = new Gson();
-        }
+//        // Lazy initialization if no JSON is desired
+//        static class GsonHolder {
+//            static Gson instance = new Gson();
+//        }
 
-        static class ListTypeHolder {
-            static Type instance = new TypeToken<ArrayList<EncodingStrategyHint>>(){}.getType();
-        }
+//        static class ListTypeHolder {
+//            static Type instance = new TypeToken<ArrayList<EncodingStrategyHint>>(){}.getType();
+//        }
 
-        /**
-         * Read {@link EncodingStrategyHint} data from a JSON file.
-         * @param path the file to read
-         * @return this builder instance
-         */
-        public CifOptionsBuilder encodingStrategyHint(Path path) {
-            try (BufferedReader bufferedReader = Files.newBufferedReader(path)) {
-                return encodingStrategyHint(bufferedReader.lines().collect(Collectors.joining()));
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        }
+//        /**
+//         * Read {@link EncodingStrategyHint} data from a JSON file.
+//         * @param path the file to read
+//         * @return this builder instance
+//         */
+//        public CifOptionsBuilder encodingStrategyHint(Path path) {
+//            try (BufferedReader bufferedReader = Files.newBufferedReader(path)) {
+//                return encodingStrategyHint(bufferedReader.lines().collect(Collectors.joining()));
+//            } catch (IOException e) {
+//                throw new UncheckedIOException(e);
+//            }
+//        }
 
-        /**
-         * Read {@link EncodingStrategyHint} data from a JSON string.
-         * @param json the string to read
-         * @return this builder instance
-         */
-        public CifOptionsBuilder encodingStrategyHint(String json) {
-            this.encodingStrategyHints.addAll(GsonHolder.instance.fromJson(json, ListTypeHolder.instance));
-            return this;
-        }
+//        /**
+//         * Read {@link EncodingStrategyHint} data from a JSON string.
+//         * @param json the string to read
+//         * @return this builder instance
+//         */
+//        public CifOptionsBuilder encodingStrategyHint(String json) {
+//            this.encodingStrategyHints.addAll(GsonHolder.instance.fromJson(json, ListTypeHolder.instance));
+//            return this;
+//        }
 
         /**
          * Manually specify encoding strategy and precision for a column.

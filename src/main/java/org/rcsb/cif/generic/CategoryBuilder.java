@@ -6,7 +6,6 @@ import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.ModelFactory;
 import org.rcsb.cif.model.StrColumn;
-import org.rcsb.cif.api.CifFile;
 
 /**
  * Builds a category in a {@link org.rcsb.cif.api.CifBlock}.

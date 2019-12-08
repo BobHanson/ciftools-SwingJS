@@ -367,7 +367,8 @@ public class DemoReadGeneric {
 
 	protected static URL getURL(String pdbId, boolean isBinary) throws MalformedURLException {
 		return (isBinary ? 
-				new URL("https://www.ebi.ac.uk/pdbe/coordinates/" + pdbId + "/full?encoding=bcif")
+				new URL("https://models.rcsb.org/" + pdbId + ".bcif")
+//				new URL("https://www.ebi.ac.uk/pdbe/coordinates/" + pdbId + "/full?encoding=bcif")
 				: 
 					new URL("https://www.ebi.ac.uk/pdbe/coordinates/" + pdbId + "/full?encoding=cif")
 //				new URL("https://files.rcsb.org/download/" + pdbId + ".cif")

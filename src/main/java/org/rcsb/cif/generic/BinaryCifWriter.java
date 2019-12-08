@@ -5,10 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.Platform;
 import org.rcsb.cif.binary.BinaryEncoder;
 import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.io.CifOptions;
+import org.rcsb.cif.io.Platform;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.ModelFactory;
 

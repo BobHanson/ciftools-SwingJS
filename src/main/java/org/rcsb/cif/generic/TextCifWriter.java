@@ -1,6 +1,6 @@
 package org.rcsb.cif.generic;
 
-import org.rcsb.cif.CifOptions;
+import org.rcsb.cif.io.CifOptions;
 import org.rcsb.cif.text.TextWriter;
 
 public class TextCifWriter extends TextWriter {

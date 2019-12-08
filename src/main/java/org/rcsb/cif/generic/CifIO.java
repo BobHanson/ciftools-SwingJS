@@ -12,8 +12,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipException;
 
-import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.ParsingException;
+import org.rcsb.cif.io.CifOptions;
+import org.rcsb.cif.io.ParsingException;
 
 /**
  * Collection of IO operations to retrieve, process, and write CIF files.

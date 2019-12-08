@@ -4,8 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.rcsb.cif.Platform;
 import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.io.Platform;
 
 public class BaseCategory implements Category {
     private final String name;

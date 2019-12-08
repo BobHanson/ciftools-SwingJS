@@ -1,4 +1,4 @@
-package org.rcsb.cif;
+package org.rcsb.cif.io;
 
 /**
  * Indicates that Cif parsing failed.

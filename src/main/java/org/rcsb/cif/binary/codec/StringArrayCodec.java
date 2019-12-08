@@ -1,12 +1,12 @@
 package org.rcsb.cif.binary.codec;
 
-import org.rcsb.cif.EncodingStrategyHint;
 import org.rcsb.cif.binary.data.ByteArray;
 import org.rcsb.cif.binary.data.EncodedDataFactory;
 import org.rcsb.cif.binary.data.Int32Array;
 import org.rcsb.cif.binary.data.StringArray;
 import org.rcsb.cif.binary.encoding.Encoding;
 import org.rcsb.cif.binary.encoding.StringArrayEncoding;
+import org.rcsb.cif.io.EncodingStrategyHint;
 
 import java.util.*;
 

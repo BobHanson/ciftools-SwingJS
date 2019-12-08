@@ -1,4 +1,4 @@
-package org.rcsb.cif;
+package org.rcsb.cif.io;
 
 /**
  * Encoding hints can be used to specify the encoding and/or precision for particular columns in the data structure.

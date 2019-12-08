@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.rcsb.cif.Platform;
+import org.rcsb.cif.io.Platform;
 
 public abstract class Builder {
 

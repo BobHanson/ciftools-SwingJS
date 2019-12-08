@@ -1,11 +1,8 @@
-package org.rcsb.cif;
+package org.rcsb.cif.io;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.rcsb.cif.model.BaseCategory;
-import org.rcsb.cif.model.Block;
 
 /**
  * This class allows for variations that depend upon the platform. Here we use a

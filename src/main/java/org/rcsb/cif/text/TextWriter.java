@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.rcsb.cif.CifOptions;
+import org.rcsb.cif.io.CifOptions;
 import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.Column;

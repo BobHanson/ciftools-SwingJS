@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.ParsingException;
+import org.rcsb.cif.io.CifOptions;
+import org.rcsb.cif.io.ParsingException;
 import org.rcsb.cif.model.BaseCategory;
 import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Category;

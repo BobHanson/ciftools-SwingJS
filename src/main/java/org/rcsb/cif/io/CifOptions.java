@@ -1,4 +1,4 @@
-package org.rcsb.cif;
+package org.rcsb.cif.io;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.rcsb.cif.CifOptions.CifOptionsBuilder;
-
 //import com.google.gson.Gson;
 //import com.google.gson.reflect.TypeToken;
 
 import org.rcsb.cif.binary.codec.Codec;
 import org.rcsb.cif.generic.CifIO;
+import org.rcsb.cif.io.CifOptions.CifOptionsBuilder;
 
 /**
  * <p>Allows to set options for CIF writing. Acquire by calling {@link CifOptions#builder()}. Pass into {@link CifIO}

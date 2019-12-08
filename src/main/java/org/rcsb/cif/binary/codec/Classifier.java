@@ -1,8 +1,8 @@
 package org.rcsb.cif.binary.codec;
 
-import org.rcsb.cif.EncodingStrategyHint;
 import org.rcsb.cif.binary.data.*;
 import org.rcsb.cif.binary.encoding.*;
+import org.rcsb.cif.io.EncodingStrategyHint;
 
 import java.util.ArrayList;
 import java.util.Comparator;

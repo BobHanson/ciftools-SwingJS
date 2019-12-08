@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.rcsb.cif.ParsingException;
-import org.rcsb.cif.Platform;
+import org.rcsb.cif.io.ParsingException;
+import org.rcsb.cif.io.Platform;
 import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.ModelFactory;

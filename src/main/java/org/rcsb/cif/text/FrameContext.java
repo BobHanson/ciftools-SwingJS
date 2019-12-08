@@ -2,7 +2,7 @@ package org.rcsb.cif.text;
 
 import java.util.Map;
 
-import org.rcsb.cif.Platform;
+import org.rcsb.cif.io.Platform;
 import org.rcsb.cif.model.Category;
 
 class FrameContext {

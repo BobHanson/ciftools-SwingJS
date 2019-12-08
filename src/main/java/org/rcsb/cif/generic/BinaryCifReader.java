@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.rcsb.cif.CifOptions;
-import org.rcsb.cif.ParsingException;
-import org.rcsb.cif.Platform;
 import org.rcsb.cif.binary.codec.Codec;
+import org.rcsb.cif.io.CifOptions;
+import org.rcsb.cif.io.ParsingException;
+import org.rcsb.cif.io.Platform;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.ProxyCategory;
 

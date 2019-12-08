@@ -1,9 +1,9 @@
 package org.rcsb.cif.binary.data;
 
-import org.rcsb.cif.EncodingStrategyHint;
 import org.rcsb.cif.binary.codec.Classifier;
 import org.rcsb.cif.binary.codec.Codec;
 import org.rcsb.cif.binary.encoding.*;
+import org.rcsb.cif.io.EncodingStrategyHint;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -12,11 +12,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This class was used to generate the .properties files from all.txt.
+ * It is not intended to be used by developers. 
+ * 
+ * @author hansonr
+ *
+ */
 public class CreateProperties {
 	
 	public static void main(String[] args) {
         try {
-    		InputStream inputStream = new CreateProperties().getClass().getResourceAsStream("all.txt");
+    		InputStream inputStream = CreateProperties.class.getResourceAsStream("all.txt");
             Objects.requireNonNull(inputStream, "could not load all.txt");
             BufferedReader lookupReader = new BufferedReader(new InputStreamReader(inputStream));
             List<String[]> lines = lookupReader.lines().map(line -> line.split("\t")).collect(Collectors.toList());	

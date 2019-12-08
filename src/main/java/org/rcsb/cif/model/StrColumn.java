@@ -13,13 +13,13 @@ public class StrColumn extends BaseColumn {
 
     public StrColumn(String name, int rowCount, String data, int[] startToken, int[] endToken) {
         super(name, rowCount, data, startToken, endToken);
-        type = COLUMN_TYPE_STRING;
+        type = Column.COLUMN_TYPE_STRING;
         this.binaryData = null;
     }
 
     public StrColumn(String name, int rowCount, Object data, int[] mask) {
         super(name, rowCount, mask);
-        type = COLUMN_TYPE_STRING;
+        type = Column.COLUMN_TYPE_STRING;
         String[] tmpData;
         if (data instanceof String[]) {
             tmpData = (String[]) data;
@@ -30,10 +30,10 @@ public class StrColumn extends BaseColumn {
         	tmpData = new String[rowCount];
         	if (data instanceof int[]) {
         		for (int i = rowCount; --i >= 0;)
-        			tmpData[i] = (hasMask && mask[i] != PRESENT ? STR_PRESENCE[mask[i]] : "" + ((int[]) data)[i]);
+        			tmpData[i] = (hasMask && mask[i] != Column.PRESENT ? Column.STR_PRESENCE[mask[i]] : "" + ((int[]) data)[i]);
         	} else {
         		for (int i = rowCount; --i >= 0;)
-        			tmpData[i] = (hasMask && mask[i] != PRESENT ? STR_PRESENCE[mask[i]] : "" + ((double[]) data)[i]);
+        			tmpData[i] = (hasMask && mask[i] != Column.PRESENT ? Column.STR_PRESENCE[mask[i]] : "" + ((double[]) data)[i]);
 
         	}
         	// note that casting with (String[]) fails in Java but not in JavaScript        	
@@ -51,7 +51,7 @@ public class StrColumn extends BaseColumn {
 
     public StrColumn(String name) {
         super(name);
-        type = COLUMN_TYPE_STRING;
+        type = Column.COLUMN_TYPE_STRING;
         this.binaryData = new String[0];
     }
 

@@ -36,13 +36,17 @@ public class BaseCategory implements Category {
 
     public BaseCategory(String name, Map<String, Column> textColumns) {
         this.name = name;
-        this.rowCount = textColumns.values()
-                .stream()
-                .findFirst()
-                .map(Column::getRowCount)
-                .orElse(0);
+        
+// still not functional in SwingJS
+//        this.rowCount = textColumns.values()
+//                .stream()
+//                .findFirst()
+//                .map(Column::getRowCount)
+//                .orElse(0);
         this.columnNamesEncoded = new ArrayList<>(textColumns.keySet());
         this.columnNamesLC = new ArrayList<>(textColumns.keySet());
+
+        this.rowCount = (this.columnNamesLC.size() == 0 ? 0 : textColumns.get(this.columnNamesLC.get(0)).getRowCount());
 
         this.isText = true;
         this.textFields = textColumns;
@@ -147,12 +151,12 @@ public class BaseCategory implements Category {
 				BaseColumn col = (BaseColumn) getColumn(colNames[i]);
 				Object data = col.getUnmaskedData();
 				switch (col.type) {
-				case BaseColumn.COLUMN_TYPE_STRING:
+				case Column.COLUMN_TYPE_STRING:
 					continue;
-				case BaseColumn.COLUMN_TYPE_FLOAT:
+				case Column.COLUMN_TYPE_FLOAT:
 					a[i] = (double[]) data;
 					break;
-				case BaseColumn.COLUMN_TYPE_INT:
+				case Column.COLUMN_TYPE_INT:
 					for (int j = rowCount; --j >= 0;) {
 						a[i][j] = ((int[]) data)[j];
 					}

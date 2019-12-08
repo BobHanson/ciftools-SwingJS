@@ -11,10 +11,8 @@ import org.rcsb.cif.CifOptions;
 import org.rcsb.cif.model.Block;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.Column;
-import org.rcsb.cif.model.FloatColumn;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.ModelFactory;
-import org.rcsb.cif.model.ValueKind;
 
 public class TextWriter {
     private final CifOptions options;
@@ -119,138 +117,92 @@ public class TextWriter {
         output.append("#\n");
     }
 
-    private boolean writeValue(StringBuilder output, Column cifField, int row) {
-        ValueKind kind = cifField.getValueKind(row);
+	private boolean writeValue(StringBuilder output, Column cifField, int row) {
+		switch (cifField.getValueKind(row)) {
+		case PRESENT:
+		default:
+			switch (cifField.getType()) {
+			case Column.COLUMN_TYPE_INT:
+				output.append(((IntColumn) cifField).get(row)).append(" ");
+				return false;
+			case Column.COLUMN_TYPE_FLOAT:
+				output.append(cifField.getStringData(row)).append(" ");
+				return false;
+			default:
+			case Column.COLUMN_TYPE_STRING:
+				return writeChecked(output, cifField.getStringData(row));
+			}
+		case NOT_PRESENT:
+	        output.append(". ");
+	        return false;
+		case UNKNOWN:
+	        output.append("? ");
+	        return false;
+		}
+	}
 
-        if (kind != ValueKind.PRESENT) {
-            if (kind == ValueKind.NOT_PRESENT) {
-                writeNotPresent(output);
-            } else {
-                writeUnknown(output);
-            }
-        } else {
-            if (cifField instanceof IntColumn) {
-                writeInteger(output, ((IntColumn) cifField).get(row));
-            } else if (cifField instanceof FloatColumn) {
-                writeFloat(output, cifField.getStringData(row));
-            } else {
-                String val = cifField.getStringData(row);
-                if (isMultiline(val)) {
-                    writeMultiline(output, val);
-                    return true;
-                } else {
-                    return writeChecked(output, val);
-                }
-            }
-        }
+	private boolean writeChecked(StringBuilder output, String val) {
+		if (val.isEmpty()) {
+			output.append(". ");
+			return false;
+		}
+		if (val.contains("\n"))
+			return writeMultiline(output, val);
+		boolean escape = false;
+		char escChar = '\'';
+		out: for (int i = 0, n = val.length(); i < n; i++) {
+			switch (val.charAt(i)) {
+			case '\t':
+			case ' ':
+				escape = true;
+				continue;
+			case '"':
+				if (val.indexOf('\'', i + 1) > 0)
+					return writeMultiline(output, val);
+				escape = true;
+				break out;
+			case '\'':
+				if (val.indexOf('"', i + 1) > 0)
+					return writeMultiline(output, val);
+				escChar = '"';
+				escape = true;
+				break out;
+			}
+		}
+		if (!escape) {
+			switch (val.charAt(0)) {
+			case '#':
+			case '$':
+			case ';':
+			case '[':
+			case ']':
+				escape = true;
+				break;
+			}
+		}
+		if (escape) {
+			output.append(escChar).append(val).append(escChar).append(' ');
+		} else {
+			output.append(val).append(' ');
+		}
+		return false;
+	}
 
-        return false;
-    }
-
-    private boolean writeChecked(StringBuilder output, String val) {
-        if (val == null || val.isEmpty()) {
-            output.append(". ");
-            return false;
-        }
-
-        boolean escape = val.charAt(0) == '_';
-        String escapeCharStart = "'";
-        String escapeCharEnd = "' ";
-        boolean hasWhitespace = false;
-        boolean hasSingle = false;
-        boolean hasDouble = false;
-        for (int i = 0; i < val.length(); i++) {
-            char c = val.charAt(i);
-
-            switch (c) {
-                case '\t':
-                case ' ':
-                    hasWhitespace = true;
-                    break;
-                case '\n':
-                    writeMultiline(output, val);
-                    return true;
-                case '"':
-                    if (hasSingle) {
-                        writeMultiline(output, val);
-                        return true;
-                    }
-
-                    hasDouble = true;
-                    escape = true;
-                    escapeCharStart = "'";
-                    escapeCharEnd = "' ";
-                    break;
-                case '\'':
-                    if (hasDouble) {
-                        writeMultiline(output, val);
-                        return true;
-                    }
-                    escape = true;
-                    hasSingle = true;
-                    escapeCharStart = "\"";
-                    escapeCharEnd = "\" ";
-                    break;
-            }
-        }
-
-        char fst = val.charAt(0);
-        if (!escape && (fst == '#' || fst == '$' || fst == ';' || fst == '[' || fst == ']' || hasWhitespace)) {
-            escapeCharStart = "'";
-            escapeCharEnd = "' ";
-            escape = true;
-        }
-
-        if (escape) {
-            output.append(escapeCharStart)
-                    .append(val)
-                    .append(escapeCharEnd);
-        } else {
-            output.append(val)
-                    .append(" ");
-        }
-
-        return false;
-    }
-
-    private void writeMultiline(StringBuilder output, String val) {
+    private static boolean writeMultiline(StringBuilder output, String val) {
         output.append("\n;")
                 .append(val)
                 .append("\n;\n");
+        return true;
     }
 
-    private boolean isMultiline(String val) {
-        return val.contains("\n");
-    }
-
-    private void writeInteger(StringBuilder output, int val) {
-        output.append(val);
-        output.append(" ");
-    }
-
-    private void writeFloat(StringBuilder output, String val) {
-        output.append(val)
-                .append(" ");
-    }
-
-    private void writeNotPresent(StringBuilder output) {
-        output.append(". ");
-    }
-
-    private void writeUnknown(StringBuilder output) {
-        output.append("? ");
-    }
-
-    private void writePadRight(StringBuilder output, String val, int width) {
-        if (val == null || val.isEmpty()) {
-            whitespace(output, width);
-            return;
-        }
-
-        int padding = width - val.length();
-        output.append(val);
-        whitespace(output, padding);
-    }
+	private boolean writePadRight(StringBuilder output, String val, int width) {
+		if (val != null && !val.isEmpty()) {
+			output.append(val);
+			width -= val.length();
+		}
+		whitespace(output, width);
+		return false;
+	}
 
     private static final List<String> PADDING_SPACES = IntStream.range(0, 80)
         .mapToObj(TextWriter::whitespaceString)

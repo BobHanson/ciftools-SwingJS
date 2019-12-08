@@ -6,19 +6,9 @@ import java.util.stream.Stream;
 
 public abstract class BaseColumn implements Column {
 
-	public final static int COLUMN_TYPE_INT = 0;
-	public final static int COLUMN_TYPE_FLOAT = 1;
-	public final static int COLUMN_TYPE_STRING = 2;
-
+	protected int type = Column.COLUMN_TYPE_STRING;
 	
-	public final static String[] STR_PRESENCE = new String[] {null, ".", "?"};
-	public final static int PRESENT = 0;
-	public final static int NOT_PRESENT = 1;
-	public final static int UNKNOWN = 2;
-	
-	protected int type = COLUMN_TYPE_STRING;
-	
-	private final String name;
+	protected final String name;
     protected final int rowCount;
 
     final boolean isText;
@@ -72,6 +62,11 @@ public abstract class BaseColumn implements Column {
         this.defined = true;
     }
 
+    @Override
+    public int getType() {
+    	return type;
+    }
+    
     String getTextData(int row) {
         return honorValueKind(textData.substring(startToken[row], endToken[row]));
     }
@@ -83,26 +78,11 @@ public abstract class BaseColumn implements Column {
     @Override
     public String getStringData(int row) {
         // if this is a FloatColumn, ensure formatting
-        if (this instanceof FloatColumn) {
-            return format(((FloatColumn) this).get(row));
+        if (type == Column.COLUMN_TYPE_FLOAT) {
+            return ((FloatColumn) this).format(row);
         } else {
             return isText ? getTextData(row) : getBinaryStringData(row);
         }
-    }
-
-    /**
-     * Some columns (i.e. CartnX, CartnY, CartnZ, and Occupancy demand for more fine-grained over the values they report.
-     * @param val the double value
-     * @return the formatted String value
-     */
-    private String format(double val) {
-        if ("Cartn_x".equals(name) || "Cartn_y".equals(name) || "Cartn_z".equals(name)) {
-            return FLOAT_3.format(val);
-        } else if ("occupancy".equals(name)) {
-            return FLOAT_2.format(val);
-        }
-
-        return FLOAT_6.format(val);
     }
 
     protected abstract String getBinaryStringData(int row);
@@ -141,10 +121,6 @@ public abstract class BaseColumn implements Column {
         return IntStream.range(0, rowCount)
                 .mapToObj(this::getValueKind);
     }
-
-    private static final DecimalFormat FLOAT_2 = new DecimalFormat("0.00");
-    private static final DecimalFormat FLOAT_3 = new DecimalFormat("0.000");
-    private static final DecimalFormat FLOAT_6 = new DecimalFormat("0.######");
 
     @Override
     public boolean isDefined() {

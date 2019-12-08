@@ -13,12 +13,14 @@ public class IntColumn extends BaseColumn {
 
     public IntColumn(String name, int rowCount, String data, int[] startToken, int[] endToken) {
         super(name, rowCount, data, startToken, endToken);
+        type = Column.COLUMN_TYPE_INT;
         this.binaryData = null;
     }
 
     public IntColumn(String name, int rowCount, Object data, int[] mask) {
         super(name, rowCount, mask);
         int[] tmpData;
+        type = Column.COLUMN_TYPE_INT;
         if (data instanceof int[]) {
             tmpData = (int[]) data;
         } else {
@@ -27,7 +29,7 @@ public class IntColumn extends BaseColumn {
         	if (data instanceof String[]) {
         		
         		for (int i = rowCount; --i >= 0;)
-        			tmpData[i] = (hasMask && mask[i] != PRESENT ? 0 : Integer.parseInt(((String[]) data)[i]));
+        			tmpData[i] = (hasMask && mask[i] != Column.PRESENT ? 0 : Integer.parseInt(((String[]) data)[i]));
         	} else {
         		for (int i = rowCount; --i >= 0;)
         			tmpData[i] = (int) ((double[]) data)[i];
@@ -45,6 +47,7 @@ public class IntColumn extends BaseColumn {
 
     public IntColumn(String name) {
         super(name);
+        type = Column.COLUMN_TYPE_INT;
         this.binaryData = new int[0];
     }
 
@@ -117,13 +120,13 @@ public class IntColumn extends BaseColumn {
 		} else {
 			for (int i = rowCount; --i >= 0;) {
 				switch (mask[i]) {
-				case PRESENT:
+				case Column.PRESENT:
 					a[i] = binaryData[i];
 					break;
-				case NOT_PRESENT: // .
+				case Column.NOT_PRESENT: // .
 					a[i] = Integer.MIN_VALUE;
 					break;
-				case UNKNOWN:     // ?
+				case Column.UNKNOWN:     // ?
 					a[i] = Integer.MAX_VALUE;
 					break;
 				}

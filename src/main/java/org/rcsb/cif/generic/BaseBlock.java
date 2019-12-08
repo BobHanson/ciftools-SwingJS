@@ -35,7 +35,11 @@ public class BaseBlock implements CifBlock {
 	@Override
     public BaseCategory getCategory(String name) {
         // try to return category, if unknown and not present, return empty category
-        return (BaseCategory) categories.computeIfAbsent(name, ModelFactory::createEmptyCategory);
+		Category c = categories.get(name);
+		if (c == null) {
+			categories.put(name, c = ModelFactory.createEmptyCategory(name));
+		}
+        return (BaseCategory) c;
     }
 
     public List<CifBlock> getSaveFrames() {

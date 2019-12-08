@@ -7,7 +7,15 @@ import java.util.stream.Stream;
  * Represents a column of information in a {@link CifFile}, e.g. the coordinates in x-dimension of all atoms.
  */
 public interface Column {
-    /**
+    int COLUMN_TYPE_INT = 0;
+	int COLUMN_TYPE_FLOAT = 1;
+	int COLUMN_TYPE_STRING = 2;
+	int PRESENT = 0;
+	int NOT_PRESENT = 1;
+	int UNKNOWN = 2;
+	String[] STR_PRESENCE = new String[] {null, ".", "?"};
+
+	/**
      * The name of this {@link Column}.
      * @return the <code>String</code> which is used to acquire this column from its parent {@link Category}
      */
@@ -57,4 +65,6 @@ public interface Column {
      * @return <code>false</code> if this {@link Column} has row count 0 and no data in it
      */
     boolean isDefined();
+
+	int getType();
 }

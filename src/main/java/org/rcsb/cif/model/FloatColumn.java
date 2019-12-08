@@ -1,5 +1,6 @@
 package org.rcsb.cif.model;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -13,12 +14,13 @@ public class FloatColumn extends BaseColumn {
 
     public FloatColumn(String name, int rowCount, String data, int[] startToken, int[] endToken) {
         super(name, rowCount, data, startToken, endToken);
+        type = Column.COLUMN_TYPE_FLOAT;
         this.binaryData = null;
     }
 
     public FloatColumn(String name, int rowCount, Object data, int[] mask) {
         super(name, rowCount, mask);
-        type = COLUMN_TYPE_FLOAT;
+        type = Column.COLUMN_TYPE_FLOAT;
         double[] tmpData;
         if (data instanceof double[]) {
             tmpData = (double[]) data;
@@ -30,7 +32,7 @@ public class FloatColumn extends BaseColumn {
         			tmpData[i] = ((int[]) data)[i];
         	} else {
         		for (int i = rowCount; --i >= 0;)
-        			tmpData[i] = (mask == null || mask[i] == PRESENT ? Double.parseDouble(((String[]) data)[i]) : 0);
+        			tmpData[i] = (mask == null || mask[i] == Column.PRESENT ? Double.parseDouble(((String[]) data)[i]) : 0);
         	}
         }
         binaryData = tmpData;
@@ -42,7 +44,7 @@ public class FloatColumn extends BaseColumn {
 
     public FloatColumn(String name) {
         super(name);
-        type = COLUMN_TYPE_FLOAT;
+        type = Column.COLUMN_TYPE_FLOAT;
         this.binaryData = new double[0];
     }
 
@@ -116,13 +118,13 @@ public class FloatColumn extends BaseColumn {
 		} else {
 			for (int i = n; --i >= 0;) {
 				switch (mask[i]) {
-				case PRESENT:
+				case Column.PRESENT:
 					a[i] = binaryData[i];
 					break;
-				case NOT_PRESENT:
+				case Column.NOT_PRESENT:
 					a[i] = Double.MIN_VALUE;
 					break;
-				case UNKNOWN:
+				case Column.UNKNOWN:
 					a[i] = Double.MAX_VALUE;
 					break;
 				}
@@ -134,5 +136,29 @@ public class FloatColumn extends BaseColumn {
 	public String toString() {
 		return Arrays.toString((double[])getUnmaskedData());
 	}
+
+    private static final DecimalFormat FLOAT_2 = new DecimalFormat("0.00");
+    private static final DecimalFormat FLOAT_3 = new DecimalFormat("0.000");
+    private static final DecimalFormat FLOAT_6 = new DecimalFormat("0.######");
+
+    /**
+     * Some columns (i.e. CartnX, CartnY, CartnZ, and Occupancy demand for more fine-grained over the values they report.
+     * @param val the double value
+     * @return the formatted String value
+     */
+    protected String format(int row) {
+    	double val = ((FloatColumn) this).get(row);
+    	switch (name.toLowerCase()) {
+    	case "cartn_x":
+    	case "cartn_y":
+    	case "cartn_z":
+           return FLOAT_3.format(val);
+    	case "occupancy":	
+            return FLOAT_2.format(val);
+        default:
+            return FLOAT_6.format(val);
+    	}
+    }
+
 
 }

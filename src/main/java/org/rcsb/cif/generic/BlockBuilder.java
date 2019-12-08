@@ -1,5 +1,6 @@
 package org.rcsb.cif.generic;
 
+import org.rcsb.cif.model.BaseCategory;
 import org.rcsb.cif.model.Builder;
 import org.rcsb.cif.model.Category;
 import org.rcsb.cif.model.ModelFactory;
@@ -41,9 +42,8 @@ public class BlockBuilder extends Builder.BlockBuilder {
      * @param categoryBuilder the child builder to incorporate
      * @return this BlockBuilder instance
      */
-    BlockBuilder digest(CategoryBuilder categoryBuilder) {
-        Category category = ModelFactory.createCategoryText(categoryBuilder.getCategoryName(), categoryBuilder.getColumns());
-        categories.put(categoryBuilder.getCategoryName(), category);
+    BlockBuilder digest(Category category) {
+        categories.put(category.getCategoryName().toLowerCase(), category);
         return this;
     }
 

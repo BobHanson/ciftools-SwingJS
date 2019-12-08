@@ -10,29 +10,7 @@ import org.rcsb.cif.generic.CifIO;
 
 public class DemoBuildGeneric {
     public static void main(String[] args) throws IOException {
-        parseFile();
-        System.out.println();
         buildModel();
-    }
-
-    private static void parseFile() throws IOException {
-        String pdbId = "1acj";
-        boolean parseBinary = true;
-
-        // CIF and BinaryCIF are stored in the same data structure
-        // to access the data, it does not matter where and in which format the data came from
-        CifFile cifFile;
-        if (parseBinary) {
-            // parse binary CIF from PDBe
-            cifFile = CifIO.readFromURL(new URL("https://www.ebi.ac.uk/pdbe/coordinates/" + pdbId + "/full?encoding=bcif"));
-        } else {
-            // parse CIF from RCSB PDB
-            cifFile = CifIO.readFromURL(new URL("https://files.rcsb.org/download/" + pdbId + ".cif"));
-        }
-
-        // get first block of CIF
-        CifBlock data = cifFile.getFirstBlock();
-
     }
 
     private static void buildModel() throws IOException {

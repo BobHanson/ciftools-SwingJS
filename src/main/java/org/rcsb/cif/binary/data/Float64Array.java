@@ -18,7 +18,8 @@ public class Float64Array extends AbstractEncodedData<double[]> implements Float
         this(data, new LinkedList<>());
     }
 
-    Float64Array(double[] data, LinkedList<Encoding> encoding) {
+    @SuppressWarnings("rawtypes")
+	Float64Array(double[] data, LinkedList<Encoding> encoding) {
         super(data, encoding);
     }
 

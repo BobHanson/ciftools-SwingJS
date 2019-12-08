@@ -59,7 +59,8 @@ public class FloatColumnBuilder<P extends CategoryBuilder> extends Builder.Colum
      * @param value 0...n float values
      * @return this builder instance
      */
-    public FloatColumnBuilder<P> add(double... value) {
+    @SuppressWarnings("unchecked")
+	public FloatColumnBuilder<P> add(double... value) {
         DoubleStream.of(value).forEach(values::add);
         IntStream.range(0, value.length).mapToObj(i -> ValueKind.PRESENT).forEach(mask::add);
         return this;

@@ -30,7 +30,8 @@ public class CategoryBuilder extends Builder.CategoryBuilder {
      * @param columnName the column name
      * @return an IntColumnBuilder
      */
-    public IntColumnBuilder enterIntColumn(String columnName) {
+    @SuppressWarnings("rawtypes")
+	public IntColumnBuilder enterIntColumn(String columnName) {
         return new IntColumnBuilder<>(getCategoryName(), columnName, this);
     }
 
@@ -39,7 +40,8 @@ public class CategoryBuilder extends Builder.CategoryBuilder {
      * @param columnName the column name
      * @return an FloatColumnBuilder
      */
-    public FloatColumnBuilder enterFloatColumn(String columnName) {
+    @SuppressWarnings("rawtypes")
+	public FloatColumnBuilder enterFloatColumn(String columnName) {
         return new FloatColumnBuilder<>(getCategoryName(), columnName, this);
     }
 
@@ -48,7 +50,8 @@ public class CategoryBuilder extends Builder.CategoryBuilder {
      * @param columnName the column name
      * @return an StrColumnBuilder
      */
-    public StrColumnBuilder enterStrColumn(String columnName) {
+    @SuppressWarnings("rawtypes")
+	public StrColumnBuilder enterStrColumn(String columnName) {
         return new StrColumnBuilder<>(getCategoryName(), columnName, this);
     }
 
@@ -66,7 +69,8 @@ public class CategoryBuilder extends Builder.CategoryBuilder {
      * Process all stored information and return to the BlockBuilder instance.
      * @return the parent builder
      */
-    public BlockBuilder leaveCategory() {
+    @SuppressWarnings("unchecked")
+	public BlockBuilder leaveCategory() {
         if (parent == null) {
             throw new IllegalStateException("cannot leave category with undefined parent block");
         }

@@ -1,6 +1,5 @@
 package org.rcsb.cif.model;
 
-import java.text.DecimalFormat;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.rcsb.cif.binary.codec.Codec;
 import org.rcsb.cif.generic.CifIO;
-import org.rcsb.cif.io.CifOptions.CifOptionsBuilder;
 
 /**
  * <p>Allows to set options for CIF writing. Acquire by calling {@link CifOptions#builder()}. Pass into {@link CifIO}

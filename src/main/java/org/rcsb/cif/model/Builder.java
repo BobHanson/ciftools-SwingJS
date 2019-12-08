@@ -13,7 +13,8 @@ public abstract class Builder {
 		protected final String categoryName;
 		protected final String columnName;
 		protected final List<ValueKind> mask;
-        public final List values;
+        @SuppressWarnings("rawtypes")
+		public final List values;
 
 
 		public ColumnBuilder(String categoryName, String columnName, List<?> values) {
@@ -71,6 +72,7 @@ public abstract class Builder {
 		 *                  {@link BlockBuilder#leaveBlock()} will throw an exception if
 		 *                  invoked
 		 */
+		@SuppressWarnings("unchecked")
 		public BlockBuilder(String blockName) {
 			this.blockName = blockName;
 			this.categories = (Map<String, Category>) Platform.getMap();
@@ -111,9 +113,12 @@ public abstract class Builder {
 
 		protected final String categoryName;
 		protected final Map<String, Column> columns;
+		@SuppressWarnings("rawtypes")
 		protected final List pendingDigests;
+		@SuppressWarnings("rawtypes")
 		protected final List finishedDigests;
 
+		@SuppressWarnings("unchecked")
 		public CategoryBuilder(String categoryName) {
 			this.categoryName = categoryName;
 			this.columns = (Map<String, Column>) Platform.getMap();
@@ -189,6 +194,7 @@ public abstract class Builder {
 		 * 
 		 * @param childColumnBuilder the child to register
 		 */
+		@SuppressWarnings("unchecked")
 		public void registerChild(ColumnBuilder childColumnBuilder) {
 			pendingDigests.add(childColumnBuilder);
 		}

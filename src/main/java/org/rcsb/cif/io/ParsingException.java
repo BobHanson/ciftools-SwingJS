@@ -3,6 +3,7 @@ package org.rcsb.cif.io;
 /**
  * Indicates that Cif parsing failed.
  */
+@SuppressWarnings("serial")
 public class ParsingException extends RuntimeException {
     public ParsingException(String message) {
         super(message);

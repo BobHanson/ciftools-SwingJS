@@ -1,7 +1,7 @@
 
 # CIFTools-java (SwingJS)
 A GitHub fork from ([rcsb CIFTools](https://github.com/rcsb/ciftools-java)),
-CIFTools-java (SwingJS) implements reading, building, and writing of mmCIF files, both ([standard text format](http://www.iucr.org/resources/cif/spec/version1.1/cifsyntax)) as well as their binary equivalent (BinaryCIF). This lightweight and efficient 100 KB package of around 80 classes works as a stand-alone zero-dependency Java library for any Java application as well as a component for any ([SwingJS](https://chemapps.stolaf.edu/swingjs/site/swingjs/examples/)) Java+JavaScript browser-based app that is derived from Java using the ([java2script](https://github.com/BobHanson/java2script)) Eclipse plug-in. 
+CIFTools-java (SwingJS) implements reading, building, and writing of mmCIF files, both ([standard text format](http://www.iucr.org/resources/cif/spec/version1.1/cifsyntax)) as well as their ([BinaryCIF](https://github.com/dsehnal/BinaryCIF)) eqivalent. This lightweight and efficient 100 KB package of around 80 classes works as a stand-alone zero-dependency Java library for any Java application as well as a component for any ([SwingJS](https://chemapps.stolaf.edu/swingjs/site/swingjs/examples/)) Java+JavaScript browser-based app that is derived from Java using the ([java2script](https://github.com/BobHanson/java2script)) Eclipse plug-in. 
 
 The SwingJS version of CIFTools utilizes a set of customizable property files for CIF tag definition, leading to a minimum set of methods for implementation. Reading of binaryCIF files utilizes the ([MessagePack](https://msgpack.org/index.html)] binary data transfer protocol.  "Categories" and "columns" are created dynamically using "generic" CIF tags such as "atom_site" and "cartn_x". 
 

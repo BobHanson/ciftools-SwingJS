@@ -31,5 +31,5 @@ Note that the base branch for this project is swingjs, not master. (I know, that
 
 ## TODO
 
-This is a minimal implementation that could be elaborated more fully to provide additional ease-of-use methods. That fact that it was produced in a week definitely shows. The Maven POM file is present, but the code has not actually been released yet as a Maven project. 
+This is a minimal implementation that could be elaborated more fully to provide additional ease-of-use methods. That fact that it was produced in two weeks start to finish definitely shows. Appologies fo that. The Maven POM file is present, but the code has not actually been released yet as a Maven project. It would be great is someone would get that cleaned up.
 

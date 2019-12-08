@@ -14,6 +14,12 @@ import org.rcsb.cif.model.Column;
 import org.rcsb.cif.model.IntColumn;
 import org.rcsb.cif.model.ModelFactory;
 
+/**
+ * A class to handle all the non-api aspects of writing text CIF.
+ * 
+ * @author hansonr
+ *
+ */
 public class TextWriter {
     private final CifOptions options;
 

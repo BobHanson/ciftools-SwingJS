@@ -96,9 +96,7 @@ javajs/util/JSThread.js
 javajs/util/Rdr.js
 javajs/util/SB.js
 javax/net/ssl/HttpsURLConnection.js
-org/rcsb/cif/CifOptions.js
 org/rcsb/cif/DemoReadGeneric.js
-org/rcsb/cif/Platform.js
 org/rcsb/cif/binary/codec/ByteArrayCodec.js
 org/rcsb/cif/binary/codec/Codec.js
 org/rcsb/cif/binary/codec/DeltaCodec.js
@@ -130,6 +128,8 @@ org/rcsb/cif/generic/BinaryFile.js
 org/rcsb/cif/generic/CifBlock.js
 org/rcsb/cif/generic/CifFile.js
 org/rcsb/cif/generic/CifIO.js
+org/rcsb/cif/io/CifOptions.js
+org/rcsb/cif/io/Platform.js
 org/rcsb/cif/model/BaseCategory.js
 org/rcsb/cif/model/BaseColumn.js
 org/rcsb/cif/model/Block.js
